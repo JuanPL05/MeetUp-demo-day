@@ -98,21 +98,21 @@ export function ProjectsManager() {
     setIsDialogOpen(true)
   }
 
-  if (error) return <div>Error al cargar proyectos</div>
-  if (!projects || !programs || !teams) return <div>Cargando...</div>
+  if (error) return <div className="text-center py-8 text-destructive">Error al cargar proyectos</div>
+  if (!projects || !programs || !teams) return <div className="text-center py-8 text-muted-foreground">Cargando...</div>
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Proyectos ({projects.length})</h3>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <h3 className="text-lg md:text-xl font-semibold">Proyectos ({projects.length})</h3>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={openCreateDialog}>
+            <Button onClick={openCreateDialog} className="w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-2" />
               Nuevo Proyecto
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="w-[95vw] max-w-md max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{editingProject ? "Editar Proyecto" : "Crear Proyecto"}</DialogTitle>
             </DialogHeader>
@@ -124,6 +124,7 @@ export function ProjectsManager() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
+                  className="mt-1.5"
                 />
               </div>
               <div>
@@ -132,6 +133,8 @@ export function ProjectsManager() {
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="mt-1.5"
+                  rows={3}
                 />
               </div>
               <div>
@@ -140,7 +143,7 @@ export function ProjectsManager() {
                   value={formData.programId}
                   onValueChange={(value) => setFormData({ ...formData, programId: value })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="mt-1.5">
                     <SelectValue placeholder="Selecciona un programa" />
                   </SelectTrigger>
                   <SelectContent>
@@ -155,7 +158,7 @@ export function ProjectsManager() {
               <div>
                 <Label htmlFor="teamId">Equipo</Label>
                 <Select value={formData.teamId} onValueChange={(value) => setFormData({ ...formData, teamId: value })}>
-                  <SelectTrigger>
+                  <SelectTrigger className="mt-1.5">
                     <SelectValue placeholder="Selecciona un equipo" />
                   </SelectTrigger>
                   <SelectContent>
@@ -175,28 +178,38 @@ export function ProjectsManager() {
         </Dialog>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid gap-3 md:gap-4">
         {projects.map((project) => (
-          <Card key={project.id}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <div className="space-y-1">
-                <CardTitle className="text-base">{project.name}</CardTitle>
-                <div className="flex space-x-2">
-                  <Badge variant="secondary">{project.program.name}</Badge>
-                  <Badge variant="outline">{project.team.name}</Badge>
+          <Card key={project.id} className="overflow-hidden">
+            <CardHeader className="flex flex-col space-y-3 pb-3">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                <div className="space-y-2 flex-1 min-w-0">
+                  <CardTitle className="text-sm md:text-base break-words">{project.name}</CardTitle>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="secondary" className="text-xs">
+                      {project.program.name}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      {project.team.name}
+                    </Badge>
+                  </div>
+                </div>
+                <div className="flex space-x-2 self-end sm:self-start">
+                  <Button variant="outline" size="sm" onClick={() => handleEdit(project)}>
+                    <Edit className="w-3 h-3 md:w-4 md:h-4" />
+                    <span className="ml-1.5 hidden sm:inline text-xs">Editar</span>
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => handleDelete(project.id)}>
+                    <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
+                    <span className="ml-1.5 hidden sm:inline text-xs">Eliminar</span>
+                  </Button>
                 </div>
               </div>
-              <div className="flex space-x-2">
-                <Button variant="outline" size="sm" onClick={() => handleEdit(project)}>
-                  <Edit className="w-4 h-4" />
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => handleDelete(project.id)}>
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">{project.description || "Sin descripción"}</p>
+            <CardContent className="pt-0">
+              <p className="text-xs md:text-sm text-muted-foreground break-words">
+                {project.description || "Sin descripción"}
+              </p>
             </CardContent>
           </Card>
         ))}
