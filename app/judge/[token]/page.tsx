@@ -121,7 +121,7 @@ export default function JudgeEvaluationPage() {
     error: dashboardError,
     mutate: mutateDashboard,
   } = useSWR("/api/dashboard", fetcher, {
-    refreshInterval: 2000,
+    refreshInterval: 15000,
     onSuccess: (data) => console.log("[v0] EVALUATION PANEL: Dashboard loaded:", data?.length || 0),
     onError: (error) => console.error("[v0] EVALUATION PANEL: Dashboard error:", error),
   })
@@ -141,7 +141,7 @@ export default function JudgeEvaluationPage() {
     mutate: mutateEvaluations,
     error: evaluationsError,
   } = useSWR<Evaluation[]>(judge ? `/api/evaluations?judgeId=${judge.id}` : null, fetcher, {
-    refreshInterval: 2000,
+    refreshInterval: 10000,
     onSuccess: (data) => {
       console.log("[v0] EVALUATION PANEL: Evaluations loaded:", data?.length || 0)
       // Refresh dashboard data when evaluations change
