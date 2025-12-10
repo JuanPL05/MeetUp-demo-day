@@ -253,7 +253,6 @@ export function SeedManager() {
           <div>
             <h4 className="font-bold text-green-600 mb-2">PROGRAMAS:</h4>
             <ul className="space-y-1 text-slate-600">
-              <li>• Programa de Incubación</li>
               <li>• Programa de Aceleración</li>
             </ul>
           </div>
