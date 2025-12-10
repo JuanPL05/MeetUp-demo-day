@@ -125,7 +125,7 @@ export default function HomePage() {
 
         {/* Footer */}
         <div className="text-center mt-12 pt-8 border-t border-border">
-          <p className="text-muted-foreground font-mono text-sm">POWERED BY RETRO TECH • DOOM 64 AESTHETIC • v0.app</p>
+          <p className="text-muted-foreground font-mono text-sm">POWERED BY RETRO TECH • v0.app</p>
         </div>
       </div>
     </div>
