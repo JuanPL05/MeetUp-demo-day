@@ -10,9 +10,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { EvaluationForm } from "@/components/judge/evaluation-form"
 import { RankingTable } from "@/components/dashboard/ranking-table"
 import { ScoreChart } from "@/components/dashboard/score-chart"
-import { StatsCards } from "@/components/dashboard/stats-cards"
 import { ProjectDetails } from "@/components/dashboard/project-details"
-import { AlertCircle, CheckCircle, Clock, Trophy, BarChart3, Users, Zap, Rocket, Lightbulb } from "lucide-react"
+import {
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Trophy,
+  BarChart3,
+  Users,
+  Zap,
+  Rocket,
+  Lightbulb,
+  ClipboardList,
+} from "lucide-react"
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -70,6 +80,7 @@ export default function JudgeEvaluationPage() {
   const [judge, setJudge] = useState<Judge | null>(null)
   const [tokenError, setTokenError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState("evaluation")
+  const [activeBlock, setActiveBlock] = useState<string | null>(null)
 
   console.log("[v0] EVALUATION PANEL: Starting with token:", token)
 
@@ -87,7 +98,7 @@ export default function JudgeEvaluationPage() {
         } else {
           const errorData = await response.json()
           console.log("[v0] EVALUATION PANEL: Token validation failed:", errorData)
-          
+
           if (errorData.isDisabled) {
             setTokenError("La evaluación ha sido cerrada por el administrador")
           } else {
@@ -172,11 +183,11 @@ export default function JudgeEvaluationPage() {
       projectProgram: project.program,
       totalQuestions: questions.length,
       filteredQuestionsCount: filteredQuestions.length,
-      sampleFilteredQuestions: filteredQuestions.slice(0, 3).map(q => ({
+      sampleFilteredQuestions: filteredQuestions.slice(0, 3).map((q) => ({
         id: q.id,
-        text: q.text?.substring(0, 50) + '...',
-        programId: q.programId
-      }))
+        text: q.text?.substring(0, 50) + "...",
+        programId: q.programId,
+      })),
     })
 
     return filteredQuestions
@@ -207,10 +218,10 @@ export default function JudgeEvaluationPage() {
 
   const getFilteredBlocks = (projectId: string | null) => {
     if (!projectId) return blocks.sort((a, b) => (a.order || 0) - (b.order || 0))
-    
+
     const filteredBlocks = getBlocksForProject(projectId).sort((a, b) => (a.order || 0) - (b.order || 0))
-    const selectedProject = projects.find(p => p.id === projectId)
-    
+    const selectedProject = projects.find((p) => p.id === projectId)
+
     // Debug: Log filtered blocks
     console.log("[DEBUG] Filtering blocks for project:", {
       projectId,
@@ -218,16 +229,16 @@ export default function JudgeEvaluationPage() {
       projectProgram: selectedProject?.program,
       totalBlocks: blocks.length,
       filteredBlocksCount: filteredBlocks.length,
-      filteredBlockNames: filteredBlocks.map(b => b.name)
+      filteredBlockNames: filteredBlocks.map((b) => b.name),
     })
-    
+
     return filteredBlocks
   }
 
   const getProgressCalculation = () => {
     // Always calculate progress based on teams/projects evaluated
     const totalProjects = projects.length
-    const evaluatedProjectIds = new Set(evaluations?.map(e => e.projectId) || [])
+    const evaluatedProjectIds = new Set(evaluations?.map((e) => e.projectId) || [])
     const evaluatedProjects = evaluatedProjectIds.size
     return {
       totalQuestions: questions.length,
@@ -315,6 +326,8 @@ export default function JudgeEvaluationPage() {
       glowColor: "shadow-emerald-200/50",
       ringColor: "ring-emerald-500",
       shadowColor: "shadow-lg shadow-emerald-100",
+      headerGradient: "linear-gradient(to right, #10b981, #16a34a)",
+      borderColor: "#10b981",
     },
     Aceleración: {
       icon: Zap,
@@ -325,6 +338,8 @@ export default function JudgeEvaluationPage() {
       glowColor: "shadow-blue-200/50",
       ringColor: "ring-blue-500",
       shadowColor: "shadow-lg shadow-blue-100",
+      headerGradient: "linear-gradient(to right, #3b82f6, #2563eb)",
+      borderColor: "#3b82f6",
     },
     Emprendimiento: {
       icon: Rocket,
@@ -335,6 +350,8 @@ export default function JudgeEvaluationPage() {
       glowColor: "shadow-purple-200/50",
       ringColor: "ring-purple-500",
       shadowColor: "shadow-lg shadow-purple-100",
+      headerGradient: "linear-gradient(to right, #a855f7, #8b5cf6)",
+      borderColor: "#a855f7",
     },
     Innovación: {
       icon: Lightbulb,
@@ -345,19 +362,22 @@ export default function JudgeEvaluationPage() {
       glowColor: "shadow-amber-200/50",
       ringColor: "ring-amber-500",
       shadowColor: "shadow-lg shadow-amber-100",
+      headerGradient: "linear-gradient(to right, #fde047, #fdba74)",
+      borderColor: "#fde047",
+    },
+    default: {
+      icon: AlertCircle,
+      color: "slate",
+      bgColor: "bg-gradient-to-br from-slate-50 to-slate-100/50",
+      borderColor: "border-slate-200",
+      badgeColor: "bg-gradient-to-r from-slate-500 to-slate-600",
+      glowColor: "shadow-slate-200/50",
+      ringColor: "ring-slate-500",
+      shadowColor: "shadow-lg shadow-slate-100",
+      headerGradient: "linear-gradient(to right, #d1d5db, #e5e7eb)",
+      borderColor: "#d1d5db",
     },
   }
-
-  const getDefaultProgramConfig = (programName: string) => ({
-    icon: AlertCircle,
-    color: "slate",
-    bgColor: "bg-gradient-to-br from-slate-50 to-slate-100/50",
-    borderColor: "border-slate-200",
-    badgeColor: "bg-gradient-to-r from-slate-500 to-slate-600",
-    glowColor: "shadow-slate-200/50",
-    ringColor: "ring-slate-500",
-    shadowColor: "shadow-lg shadow-slate-100",
-  })
 
   const organizedPrograms =
     projects?.reduce(
@@ -385,25 +405,25 @@ export default function JudgeEvaluationPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
-      <div className="max-w-7xl mx-auto p-6">
-        <div className="mb-8 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-2xl p-8 border border-primary/20">
-          <div className="flex items-center justify-between">
+      <div className="max-w-7xl mx-auto p-3 sm:p-4 md:p-6">
+        <div className="mb-6 md:mb-8 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 border border-primary/20">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-3">
+              <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-2 md:mb-3">
                 Panel de Evaluación
               </h1>
-              <p className="text-xl text-muted-foreground font-medium">
+              <p className="text-base sm:text-lg md:text-xl text-muted-foreground font-medium">
                 Bienvenido, <span className="text-primary font-semibold">{judge?.name || "Juez"}</span>
               </p>
             </div>
-            <div className="text-right bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-border shadow-sm">
-              <div className="flex items-center gap-3 mb-3">
-                <CheckCircle className="w-5 h-5 text-accent" />
-                <span className="text-sm font-medium">
+            <div className="bg-white/80 backdrop-blur-sm rounded-lg md:rounded-xl p-3 md:p-4 border border-border shadow-sm">
+              <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
+                <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-accent flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-medium">
                   {completedEvaluations} de {totalEvaluations} equipos evaluados
                 </span>
               </div>
-              <Progress value={progressPercentage} className="w-72 h-3" />
+              <Progress value={progressPercentage} className="w-full md:w-72 h-2 md:h-3" />
               <div className="text-xs text-muted-foreground mt-2 text-center">
                 {Math.round(progressPercentage)}% completado
               </div>
@@ -411,70 +431,73 @@ export default function JudgeEvaluationPage() {
           </div>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="grid w-full grid-cols-2 bg-white/80 backdrop-blur-sm border border-border shadow-sm h-14">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6 md:mb-8">
+          <TabsList className="grid w-full grid-cols-2 bg-white/80 backdrop-blur-sm border border-border shadow-sm h-10 md:h-12">
             <TabsTrigger
               value="evaluation"
-              className="flex items-center gap-3 font-semibold text-base h-12 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white"
+              className="flex items-center gap-1 md:gap-2 font-semibold text-sm md:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white"
             >
-              <CheckCircle className="w-5 h-5" />
-              Evaluación
+              <ClipboardList className="w-3 h-3 md:w-4 md:h-4" />
+              <span className="hidden sm:inline">Evaluación</span>
+              <span className="sm:hidden">Eval.</span>
             </TabsTrigger>
             <TabsTrigger
               value="dashboard"
-              className="flex items-center gap-3 font-semibold text-base h-12 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white"
+              className="flex items-center gap-1 md:gap-2 font-semibold text-sm md:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white"
             >
-              <BarChart3 className="w-5 h-5" />
-              Dashboard
+              <BarChart3 className="w-3 h-3 md:w-4 md:h-4" />
+              <span className="hidden sm:inline">Dashboard</span>
+              <span className="sm:hidden">Stats</span>
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="evaluation">
-            <div className="space-y-8">
-              <div className="text-center">
-                <h2 className="text-3xl font-bold text-foreground mb-2">Selecciona un equipo participante</h2>
-                <p className="text-muted-foreground text-lg">
-                  Elige un equipo participante de la lista para comenzar la evaluación
-                </p>
-              </div>
+            <div className="space-y-6 md:space-y-12">
+              {sortedPrograms.map(([programName, programProjects]) => {
+                const config = programConfig[programName as keyof typeof programConfig] || programConfig.default
+                const IconComponent = config.icon
 
-              <div className="space-y-8">
-                {sortedPrograms.map(([programName, programProjects]) => {
-                  const config =
-                    programConfig[programName as keyof typeof programConfig] || getDefaultProgramConfig(programName)
-                  const IconComponent = config.icon
-
-                  return (
-                    <div
-                      key={programName}
-                      className={`rounded-2xl p-8 border-2 ${config.bgColor} ${config.borderColor} ${config.shadowColor} backdrop-blur-sm`}
-                    >
-                      <div className="flex items-center justify-between mb-8 pb-6 border-b border-border/50">
-                        <div className="flex items-center gap-6">
-                          <div className={`p-4 rounded-2xl ${config.badgeColor} text-white shadow-lg`}>
-                            <IconComponent className="w-10 h-10" />
+                return (
+                  <Card
+                    key={programName}
+                    className="overflow-hidden border-2 bg-white/90 backdrop-blur-sm shadow-lg"
+                    style={{ borderColor: config.borderColor }}
+                  >
+                    <CardHeader className="pb-4 md:pb-8" style={{ background: config.headerGradient }}>
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 md:pb-6 border-b border-border/50">
+                        <div className="flex items-center gap-3 md:gap-6">
+                          <div
+                            className={`p-2 md:p-4 rounded-xl md:rounded-2xl ${config.badgeColor} text-white shadow-lg`}
+                          >
+                            <IconComponent className="w-6 h-6 md:w-10 md:h-10" />
                           </div>
                           <div>
-                            <h3 className="text-3xl font-bold text-foreground mb-1">Equipo participante de {programName}</h3>
-                            <p className="text-muted-foreground text-lg">
+                            <h3 className="text-lg sm:text-xl md:text-3xl font-bold text-foreground mb-1">
+                              <span className="hidden md:inline">Equipo participante de </span>
+                              <span className="md:hidden">Equipos </span>
+                              {programName}
+                            </h3>
+                            <p className="text-sm md:text-lg text-muted-foreground">
                               {programProjects.length} proyecto{programProjects.length !== 1 ? "s" : ""} disponible
                               {programProjects.length !== 1 ? "s" : ""}
                             </p>
                           </div>
                         </div>
-                        <Badge className={`${config.badgeColor} text-white text-xl font-bold px-6 py-3 shadow-lg`}>
+                        <Badge
+                          className={`${config.badgeColor} text-white text-base md:text-xl font-bold px-4 md:px-6 py-2 md:py-3 shadow-lg self-start sm:self-auto`}
+                        >
                           {programProjects.length}
                         </Badge>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 pt-4">
                         {programProjects.map((project) => {
                           const projectEvaluations = safeEvaluations.filter((e) => e.projectId === project.id)
-                          
+
                           // Calculate questions specific to this project's program
                           const projectQuestions = getQuestionsForProject(project.id)
                           const projectQuestionCount = projectQuestions.length
-                          
+
                           const projectProgress =
                             projectQuestionCount > 0 ? (projectEvaluations.length / projectQuestionCount) * 100 : 0
                           const isComplete = projectProgress === 100
@@ -484,46 +507,48 @@ export default function JudgeEvaluationPage() {
                               key={project.id}
                               className={`cursor-pointer transition-all duration-300 hover:shadow-xl border-2 bg-white/90 backdrop-blur-sm ${
                                 selectedProject === project.id
-                                  ? `ring-4 ${config.ringColor} ${config.shadowColor} border-current scale-105`
+                                  ? `ring-2 md:ring-4 ${config.ringColor} ${config.shadowColor} border-current scale-[1.02] md:scale-105`
                                   : `hover:shadow-lg ${config.borderColor} hover:border-current/70 hover:scale-[1.02]`
                               }`}
                               onClick={() => setSelectedProject(project.id)}
                             >
-                              <CardHeader className="pb-4">
-                                <div className="flex items-center justify-between mb-4">
+                              <CardHeader className="pb-3 md:pb-4">
+                                <div className="flex items-center justify-between mb-3 md:mb-4">
                                   <Badge
-                                    className={`${config.badgeColor} text-white font-bold px-4 py-2 text-sm shadow-md`}
+                                    className={`${config.badgeColor} text-white font-bold px-3 md:px-4 py-1 md:py-2 text-xs md:text-sm shadow-md`}
                                   >
                                     {programName}
                                   </Badge>
                                   {isComplete && (
-                                    <div className="bg-accent rounded-full p-1">
-                                      <CheckCircle className="w-5 h-5 text-white" />
+                                    <div className="bg-accent rounded-full p-0.5 md:p-1">
+                                      <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-white" />
                                     </div>
                                   )}
                                 </div>
-                                <CardTitle className="text-xl font-bold text-foreground mb-2">{project.name}</CardTitle>
+                                <CardTitle className="text-base md:text-xl font-bold text-foreground mb-2">
+                                  {project.name}
+                                </CardTitle>
                                 <div className="space-y-2">
-                                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                    <Users className="w-4 h-4" />
+                                  <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
+                                    <Users className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
                                     <span className="font-medium">Área: {project.team || "Sin equipo"}</span>
                                   </div>
                                   {project.teamDescription && (
-                                    <div className="text-sm text-muted-foreground">
+                                    <div className="text-xs md:text-sm text-muted-foreground line-clamp-2">
                                       <span className="font-medium">Descripción: </span>
                                       {project.teamDescription}
                                     </div>
                                   )}
                                 </div>
                               </CardHeader>
-                              <CardContent>
-                                <div className="space-y-4">
-                                  <div className="flex justify-between text-sm font-medium">
+                              <CardContent className="p-3 md:p-4">
+                                <div className="space-y-3 md:space-y-4">
+                                  <div className="flex justify-between text-xs md:text-sm font-medium">
                                     <span>Progreso de Evaluación</span>
                                     <span className="text-primary">{Math.round(projectProgress)}%</span>
                                   </div>
-                                  <Progress value={projectProgress} className="h-3" />
-                                  <div className="text-xs text-muted-foreground text-center bg-muted/50 rounded-lg py-2">
+                                  <Progress value={projectProgress} className="h-2 md:h-3" />
+                                  <div className="text-xs text-muted-foreground text-center bg-muted/50 rounded-lg py-1.5 md:py-2">
                                     {projectEvaluations.length} de {projectQuestionCount} preguntas evaluadas
                                   </div>
                                 </div>
@@ -532,41 +557,43 @@ export default function JudgeEvaluationPage() {
                           )
                         })}
                       </div>
-                    </div>
-                  )
-                })}
+                    </CardHeader>
+                  </Card>
+                )
+              })}
 
-                {sortedPrograms.length === 0 && (
-                  <div className="text-center py-16 bg-white/50 backdrop-blur-sm rounded-2xl border border-border">
-                    <AlertCircle className="w-20 h-20 mx-auto mb-6 text-muted-foreground" />
-                    <h3 className="text-2xl font-bold mb-3">No hay proyectos disponibles</h3>
-                    <p className="text-muted-foreground text-lg">
-                      No se encontraron proyectos para evaluar. Contacta al administrador.
-                    </p>
-                  </div>
-                )}
-              </div>
+              {sortedPrograms.length === 0 && (
+                <div className="text-center py-16 bg-white/50 backdrop-blur-sm rounded-2xl border border-border">
+                  <AlertCircle className="w-20 h-20 mx-auto mb-6 text-muted-foreground" />
+                  <h3 className="text-2xl font-bold mb-3">No hay proyectos disponibles</h3>
+                  <p className="text-muted-foreground text-lg">
+                    No se encontraron proyectos para evaluar. Contacta al administrador.
+                  </p>
+                </div>
+              )}
             </div>
 
-            {selectedProject && judge && (
-              <div className="mt-8">
+            {selectedProject && (
+              <div className="mt-6 md:mt-8">
                 <Card className="border-2 border-primary/20 bg-white/95 backdrop-blur-sm shadow-xl">
-                  <CardHeader className="bg-gradient-to-r from-primary/10 to-accent/10 border-b border-border">
-                    <CardTitle className="flex items-center gap-4 text-2xl">
-                      <div className="w-2 h-8 bg-gradient-to-b from-primary to-accent rounded-full"></div>
-                      Evaluando: {projects.find((p) => p.id === selectedProject)?.name}
+                  <CardHeader className="bg-gradient-to-r from-primary/10 to-accent/10 border-b border-border p-4 md:p-6">
+                    <CardTitle className="flex flex-wrap items-center gap-2 md:gap-4 text-base md:text-2xl">
+                      <div className="w-1 md:w-2 h-6 md:h-8 bg-gradient-to-b from-primary to-accent rounded-full"></div>
+                      <span className="break-words flex-1 min-w-0">
+                        Evaluando: {projects.find((p) => p.id === selectedProject)?.name}
+                      </span>
                       <Badge
                         className={`${
                           projects.find((p) => p.id === selectedProject)?.program === "Incubación"
                             ? "bg-gradient-to-r from-emerald-500 to-emerald-600"
                             : "bg-gradient-to-r from-blue-500 to-blue-600"
-                        } text-white shadow-md`}
+                        } text-white shadow-md text-xs md:text-sm px-2 md:px-3 py-1`}
                       >
                         {projects.find((p) => p.id === selectedProject)?.program}
                       </Badge>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="p-8">
+                  <CardContent className="p-4 md:p-8">
                     {(() => {
                       const filteredBlocks = getFilteredBlocks(selectedProject)
                       const questionsByBlock = getQuestionsByBlock(selectedProject)
@@ -584,9 +611,9 @@ export default function JudgeEvaluationPage() {
                       }
 
                       return (
-                        <Tabs defaultValue={filteredBlocks[0]?.id} className="space-y-8">
-                          <div className="w-full overflow-x-auto">
-                            <TabsList className="inline-flex h-12 items-center justify-start rounded-xl bg-muted/50 p-1 text-muted-foreground min-w-full backdrop-blur-sm">
+                        <Tabs value={activeBlock} onValueChange={setActiveBlock}>
+                          <div className="w-full overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+                            <TabsList className="inline-flex h-10 md:h-12 items-center justify-start rounded-lg md:rounded-xl bg-muted/50 p-1 text-muted-foreground min-w-full backdrop-blur-sm">
                               {filteredBlocks.map((block) => {
                                 const blockQuestions = questionsByBlock[block.id] || []
                                 const blockEvaluations = safeEvaluations.filter(
@@ -603,12 +630,12 @@ export default function JudgeEvaluationPage() {
                                   <TabsTrigger
                                     key={block.id}
                                     value={block.id}
-                                    className="relative text-sm px-4 py-2 h-10 whitespace-nowrap flex-shrink-0 min-w-0 font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                                    className="relative text-xs md:text-sm px-2 md:px-4 py-1.5 md:py-2 h-8 md:h-10 whitespace-nowrap flex-shrink-0 min-w-0 font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm"
                                   >
-                                    <span className="truncate max-w-[120px]">{block.name}</span>
+                                    <span className="truncate max-w-[100px] md:max-w-[120px]">{block.name}</span>
                                     {blockProgress === 100 && (
-                                      <div className="absolute -top-1 -right-1 bg-accent rounded-full p-0.5">
-                                        <CheckCircle className="w-3 h-3 text-white" />
+                                      <div className="absolute -top-0.5 md:-top-1 -right-0.5 md:-right-1 bg-accent rounded-full p-0.5">
+                                        <CheckCircle className="w-2.5 h-2.5 md:w-3 md:h-3 text-white" />
                                       </div>
                                     )}
                                   </TabsTrigger>
@@ -639,61 +666,46 @@ export default function JudgeEvaluationPage() {
           </TabsContent>
 
           <TabsContent value="dashboard">
-            {dashboardData && (
-              <div className="space-y-8">
-                <StatsCards projects={dashboardData} />
+            <Tabs defaultValue="rankings">
+              <TabsList className="grid w-full grid-cols-2 bg-white/80 backdrop-blur-sm border border-border shadow-sm h-10 md:h-12">
+                <TabsTrigger
+                  value="rankings"
+                  className="flex items-center gap-1 md:gap-2 font-semibold text-sm md:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white"
+                >
+                  <Trophy className="w-3 h-3 md:w-4 md:h-4" />
+                  <span className="hidden sm:inline">Rankings</span>
+                  <span className="sm:hidden">Rank</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="analytics"
+                  className="flex items-center gap-1 md:gap-2 font-semibold text-sm md:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white"
+                >
+                  <BarChart3 className="w-3 h-3 md:w-4 md:h-4" />
+                  <span className="hidden sm:inline">Análisis</span>
+                  <span className="sm:hidden">Stats</span>
+                </TabsTrigger>
+              </TabsList>
 
-                <Tabs defaultValue="rankings" className="space-y-6">
-                  <TabsList className="grid w-full grid-cols-2 bg-white/80 backdrop-blur-sm border border-border shadow-sm h-12">
-                    <TabsTrigger
-                      value="rankings"
-                      className="flex items-center gap-2 font-semibold text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white"
-                    >
-                      <Trophy className="w-4 h-4" />
-                      Rankings
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="analytics"
-                      className="flex items-center gap-2 font-semibold text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white"
-                    >
-                      <BarChart3 className="w-4 h-4" />
-                      Análisis
-                    </TabsTrigger>
-                  </TabsList>
+              <TabsContent value="rankings">
+                <RankingTable
+                  projects={dashboardData}
+                  onProjectSelect={setSelectedDashboardProject}
+                  selectedProject={selectedDashboardProject}
+                />
 
-                  <TabsContent value="rankings">
-                    <RankingTable
-                      projects={dashboardData}
-                      onProjectSelect={setSelectedDashboardProject}
-                      selectedProject={selectedDashboardProject}
-                    />
-
-                    {selectedDashboardProject && (
-                      <div className="mt-8">
-                        <ProjectDetails project={dashboardData.find((p: any) => p.id === selectedDashboardProject)} />
-                      </div>
-                    )}
-                  </TabsContent>
-
-                  <TabsContent value="analytics">
-                    <div className="grid gap-8">
-                      <ScoreChart projects={dashboardData} />
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              </div>
-            )}
-
-            {!dashboardData && (
-              <Card className="bg-white/90 backdrop-blur-sm">
-                <CardContent className="flex items-center justify-center h-64">
-                  <div className="text-center">
-                    <Clock className="w-20 h-20 mx-auto mb-6 text-primary animate-spin" />
-                    <p className="text-xl font-semibold text-foreground">Cargando datos del dashboard...</p>
+                {selectedDashboardProject && (
+                  <div className="mt-8">
+                    <ProjectDetails project={dashboardData.find((p: any) => p.id === selectedDashboardProject)} />
                   </div>
-                </CardContent>
-              </Card>
-            )}
+                )}
+              </TabsContent>
+
+              <TabsContent value="analytics">
+                <div className="grid gap-8">
+                  <ScoreChart projects={dashboardData} />
+                </div>
+              </TabsContent>
+            </Tabs>
           </TabsContent>
         </Tabs>
       </div>
