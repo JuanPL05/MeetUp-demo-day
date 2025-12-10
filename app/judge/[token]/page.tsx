@@ -328,7 +328,7 @@ export default function JudgeEvaluationPage() {
         <div className="mb-6 md:mb-8 bg-white rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg border border-slate-200">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-2">Panel de Evaluación</h1>
+              <h1 className="text-2xl font-bold mb-2 text-primary-foreground sm:text-5xl">Panel de Evaluación</h1>
               <p className="text-base sm:text-lg text-slate-600">
                 Bienvenido, <span className="text-primary font-semibold">{judge?.name || "Juez"}</span>
               </p>
