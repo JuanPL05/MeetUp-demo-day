@@ -154,6 +154,16 @@ export default function JudgeEvaluationPage() {
   const blocks = blocksData || []
   const questions = questionsData || []
 
+  useEffect(() => {
+    if (selectedProject && blocks.length > 0) {
+      const filteredBlocks = getFilteredBlocks(selectedProject)
+      if (filteredBlocks.length > 0 && !activeBlock) {
+        setActiveBlock(filteredBlocks[0].id)
+        console.log("[v0] EVALUATION PANEL: Auto-selected first block:", filteredBlocks[0].name)
+      }
+    }
+  }, [selectedProject, blocks.length])
+
   const getQuestionsForProject = (projectId: string) => {
     const project = projects.find((p) => p.id === projectId)
     if (!project) return questions
