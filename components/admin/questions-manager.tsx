@@ -86,11 +86,11 @@ export function QuestionsManager() {
         console.log("[Frontend] Question operation successful")
       } else {
         console.error("[Frontend] Error response:", result)
-        alert(`Error: ${result.error || 'No se pudo guardar la pregunta'}`)
+        alert(`Error: ${result.error || "No se pudo guardar la pregunta"}`)
       }
     } catch (error) {
       console.error("[Frontend] Network/Parse error:", error)
-      alert(`Error de red: ${error instanceof Error ? error.message : 'Error desconocido'}`)
+      alert(`Error de red: ${error instanceof Error ? error.message : "Error desconocido"}`)
     }
   }
 
@@ -99,7 +99,7 @@ export function QuestionsManager() {
     // Ensure score is within allowed range (0.2 - 1.2)
     const safeScore = question.score || 0.5
     const clampedScore = Math.max(0.2, Math.min(1.2, safeScore))
-    
+
     setFormData({
       text: question.text,
       description: question.description || "",
@@ -115,22 +115,22 @@ export function QuestionsManager() {
     if (confirm("¿Estás seguro de que quieres eliminar esta pregunta?")) {
       try {
         console.log("[Frontend] Deleting question:", id)
-        
+
         const response = await fetch(`/api/questions/${id}`, { method: "DELETE" })
         const result = await response.json()
-        
+
         console.log("[Frontend] Delete response:", response.status, result)
-        
+
         if (response.ok) {
           mutate()
           console.log("[Frontend] Question deleted successfully")
         } else {
           console.error("[Frontend] Delete error:", result)
-          alert(`Error al eliminar: ${result.error || 'No se pudo eliminar la pregunta'}`)
+          alert(`Error al eliminar: ${result.error || "No se pudo eliminar la pregunta"}`)
         }
       } catch (error) {
         console.error("[Frontend] Delete network error:", error)
-        alert(`Error de red al eliminar: ${error instanceof Error ? error.message : 'Error desconocido'}`)
+        alert(`Error de red al eliminar: ${error instanceof Error ? error.message : "Error desconocido"}`)
       }
     }
   }
@@ -141,8 +141,9 @@ export function QuestionsManager() {
     setIsDialogOpen(true)
   }
 
-  if (error) return <div>Error al cargar preguntas</div>
-  if (!questions || !blocks || !programs) return <div>Cargando...</div>
+  if (error) return <div className="text-center py-8 text-destructive">Error al cargar preguntas</div>
+  if (!questions || !blocks || !programs)
+    return <div className="text-center py-8 text-muted-foreground">Cargando...</div>
 
   const questionsByProgram = questions.reduce(
     (acc, question) => {
@@ -162,50 +163,62 @@ export function QuestionsManager() {
 
   const getProgramIcon = (programName: string) => {
     if (programName.toLowerCase().includes("incubación") || programName.toLowerCase().includes("incubacion")) {
-      return <Target className="w-4 h-4" />
+      return <Target className="w-3 h-3 md:w-4 md:h-4" />
     }
     if (programName.toLowerCase().includes("aceleración") || programName.toLowerCase().includes("aceleracion")) {
-      return <Rocket className="w-4 h-4" />
+      return <Rocket className="w-3 h-3 md:w-4 md:h-4" />
     }
-    return <Target className="w-4 h-4" />
+    return <Target className="w-3 h-3 md:w-4 md:h-4" />
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Preguntas ({questions.length})</h3>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <h3 className="text-lg md:text-xl font-semibold">Preguntas ({questions.length})</h3>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={openCreateDialog}>
+            <Button onClick={openCreateDialog} className="w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-2" />
               Nueva Pregunta
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="w-[95vw] max-w-md max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>{editingQuestion ? "Editar Pregunta" : "Crear Pregunta"}</DialogTitle>
+              <DialogTitle className="text-base md:text-lg">
+                {editingQuestion ? "Editar Pregunta" : "Crear Pregunta"}
+              </DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="text">Pregunta</Label>
+                <Label htmlFor="text" className="text-sm">
+                  Pregunta
+                </Label>
                 <Textarea
                   id="text"
                   value={formData.text}
                   onChange={(e) => setFormData({ ...formData, text: e.target.value })}
                   required
+                  className="mt-1.5 text-sm"
+                  rows={3}
                 />
               </div>
               <div>
-                <Label htmlFor="description">Descripción / Criterios Orientadores</Label>
+                <Label htmlFor="description" className="text-sm">
+                  Descripción / Criterios Orientadores
+                </Label>
                 <Textarea
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Criterios orientadores para evaluar esta pregunta..."
+                  className="mt-1.5 text-sm"
+                  rows={3}
                 />
               </div>
               <div>
-                <Label htmlFor="score">Puntuación (0.2 - 1.2)</Label>
+                <Label htmlFor="score" className="text-sm">
+                  Puntuación (0.2 - 1.2)
+                </Label>
                 <Input
                   id="score"
                   type="number"
@@ -216,24 +229,26 @@ export function QuestionsManager() {
                   onChange={(e) => {
                     let value = e.target.value === "" ? 0.5 : Number.parseFloat(e.target.value)
                     if (isNaN(value)) value = 0.5
-                    // Clamp value to allowed range
                     value = Math.max(0.2, Math.min(1.2, value))
                     setFormData({ ...formData, score: value })
                   }}
                   placeholder="Ej: 0.5"
                   required
+                  className="mt-1.5"
                 />
                 <p className="text-xs text-muted-foreground mt-1">
                   Incubación: Total 10 puntos | Aceleración: Total 10 puntos
                 </p>
               </div>
               <div>
-                <Label htmlFor="programId">Programa</Label>
+                <Label htmlFor="programId" className="text-sm">
+                  Programa
+                </Label>
                 <Select
                   value={formData.programId}
                   onValueChange={(value) => setFormData({ ...formData, programId: value })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="mt-1.5">
                     <SelectValue placeholder="Selecciona un programa" />
                   </SelectTrigger>
                   <SelectContent>
@@ -246,12 +261,14 @@ export function QuestionsManager() {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="blockId">Bloque</Label>
+                <Label htmlFor="blockId" className="text-sm">
+                  Bloque
+                </Label>
                 <Select
                   value={formData.blockId}
                   onValueChange={(value) => setFormData({ ...formData, blockId: value })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="mt-1.5">
                     <SelectValue placeholder="Selecciona un bloque" />
                   </SelectTrigger>
                   <SelectContent>
@@ -264,13 +281,16 @@ export function QuestionsManager() {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="order">Orden</Label>
+                <Label htmlFor="order" className="text-sm">
+                  Orden
+                </Label>
                 <Input
                   id="order"
                   type="number"
                   value={formData.order}
                   onChange={(e) => setFormData({ ...formData, order: Number.parseInt(e.target.value) })}
                   required
+                  className="mt-1.5"
                 />
               </div>
               <Button type="submit" className="w-full">
@@ -281,45 +301,55 @@ export function QuestionsManager() {
         </Dialog>
       </div>
 
-      <div className="space-y-8">
+      <div className="space-y-6 md:space-y-8">
         {Object.entries(questionsByProgram).map(([programName, blockGroups]) => (
-          <div key={programName} className="border border-border rounded-lg p-6 bg-card/50">
-            <div className="flex items-center gap-2 mb-6">
+          <div key={programName} className="border border-border rounded-lg p-4 md:p-6 bg-card/50">
+            <div className="flex flex-wrap items-center gap-2 mb-4 md:mb-6">
               {getProgramIcon(programName)}
-              <h3 className="text-xl font-bold text-primary uppercase tracking-wide">{programName}</h3>
-              <span className="text-sm text-muted-foreground">
+              <h3 className="text-lg md:text-xl font-bold text-primary uppercase tracking-wide break-words">
+                {programName}
+              </h3>
+              <span className="text-xs md:text-sm text-muted-foreground">
                 ({Object.values(blockGroups).flat().length} preguntas)
               </span>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               {Object.entries(blockGroups).map(([blockName, blockQuestions]) => (
                 <div key={blockName}>
-                  <h4 className="text-md font-semibold mb-3 text-foreground/80">{blockName}</h4>
-                  <div className="grid gap-3">
+                  <h4 className="text-sm md:text-base font-semibold mb-2 md:mb-3 text-foreground/80 break-words">
+                    {blockName}
+                  </h4>
+                  <div className="grid gap-2 md:gap-3">
                     {blockQuestions
                       .sort((a, b) => a.order - b.order)
                       .map((question) => (
-                        <Card key={question.id} className="hover:bg-accent/50 transition-colors">
-                          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <div className="flex-1">
-                              <CardTitle className="text-sm mb-1">
-                                {question.order}. {question.text}
-                                <span className="ml-2 text-xs bg-primary/20 text-primary px-2 py-1 rounded">
-                                  {question.score || 0.5} pts
-                                </span>
-                              </CardTitle>
-                              {question.description && (
-                                <p className="text-xs text-muted-foreground mt-1">{question.description}</p>
-                              )}
-                            </div>
-                            <div className="flex space-x-2">
-                              <Button variant="outline" size="sm" onClick={() => handleEdit(question)}>
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                              <Button variant="outline" size="sm" onClick={() => handleDelete(question.id)}>
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
+                        <Card key={question.id} className="hover:bg-accent/50 transition-colors overflow-hidden">
+                          <CardHeader className="flex flex-col space-y-3 pb-3 md:pb-4">
+                            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                              <div className="flex-1 min-w-0">
+                                <CardTitle className="text-xs md:text-sm mb-2 break-words">
+                                  <span className="font-semibold">{question.order}.</span> {question.text}
+                                  <span className="ml-2 inline-block text-xs bg-primary/20 text-primary px-2 py-0.5 rounded">
+                                    {question.score || 0.5} pts
+                                  </span>
+                                </CardTitle>
+                                {question.description && (
+                                  <p className="text-xs text-muted-foreground mt-1 break-words">
+                                    {question.description}
+                                  </p>
+                                )}
+                              </div>
+                              <div className="flex space-x-2 self-end sm:self-start">
+                                <Button variant="outline" size="sm" onClick={() => handleEdit(question)}>
+                                  <Edit className="w-3 h-3 md:w-4 md:h-4" />
+                                  <span className="ml-1.5 hidden sm:inline text-xs">Editar</span>
+                                </Button>
+                                <Button variant="outline" size="sm" onClick={() => handleDelete(question.id)}>
+                                  <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
+                                  <span className="ml-1.5 hidden sm:inline text-xs">Eliminar</span>
+                                </Button>
+                              </div>
                             </div>
                           </CardHeader>
                         </Card>

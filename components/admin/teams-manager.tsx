@@ -69,21 +69,21 @@ export function TeamsManager() {
     setIsDialogOpen(true)
   }
 
-  if (error) return <div>Error al cargar equipos</div>
-  if (!teams) return <div>Cargando...</div>
+  if (error) return <div className="text-center py-8 text-destructive">Error al cargar equipos</div>
+  if (!teams) return <div className="text-center py-8 text-muted-foreground">Cargando...</div>
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Áreas ({teams.length})</h3>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <h3 className="text-lg md:text-xl font-semibold">Áreas ({teams.length})</h3>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={openCreateDialog}>
+            <Button onClick={openCreateDialog} className="w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-2" />
               Nuevo Equipo
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="w-[95vw] max-w-md">
             <DialogHeader>
               <DialogTitle>{editingTeam ? "Editar Equipo" : "Crear Equipo"}</DialogTitle>
             </DialogHeader>
@@ -95,6 +95,7 @@ export function TeamsManager() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
+                  className="mt-1.5"
                 />
               </div>
               <div>
@@ -103,6 +104,8 @@ export function TeamsManager() {
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="mt-1.5"
+                  rows={3}
                 />
               </div>
               <Button type="submit" className="w-full">
@@ -113,22 +116,26 @@ export function TeamsManager() {
         </Dialog>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid gap-3 md:gap-4">
         {teams.map((team) => (
-          <Card key={team.id}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-base">{team.name}</CardTitle>
-              <div className="flex space-x-2">
+          <Card key={team.id} className="overflow-hidden">
+            <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0 pb-3">
+              <CardTitle className="text-sm md:text-base break-words pr-2">{team.name}</CardTitle>
+              <div className="flex space-x-2 self-end sm:self-auto">
                 <Button variant="outline" size="sm" onClick={() => handleEdit(team)}>
-                  <Edit className="w-4 h-4" />
+                  <Edit className="w-3 h-3 md:w-4 md:h-4" />
+                  <span className="ml-1.5 hidden sm:inline text-xs">Editar</span>
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => handleDelete(team.id)}>
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
+                  <span className="ml-1.5 hidden sm:inline text-xs">Eliminar</span>
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">{team.description || "Sin descripción"}</p>
+            <CardContent className="pt-0">
+              <p className="text-xs md:text-sm text-muted-foreground break-words">
+                {team.description || "Sin descripción"}
+              </p>
             </CardContent>
           </Card>
         ))}

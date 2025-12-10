@@ -144,16 +144,16 @@ export function ProgramsManager() {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Programas ({programs.length})</h3>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0">
+        <h3 className="text-base sm:text-lg font-semibold">Programas ({programs.length})</h3>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={openCreateDialog}>
+            <Button onClick={openCreateDialog} className="w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-2" />
               Nuevo Programa
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="w-[95vw] max-w-md">
             <DialogHeader>
               <DialogTitle>{editingProgram ? "Editar Programa" : "Crear Programa"}</DialogTitle>
             </DialogHeader>
@@ -202,11 +202,11 @@ export function ProgramsManager() {
         </Dialog>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid gap-3 sm:gap-4">
         {programs.map((program) => (
-          <Card key={program.id}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-base">{program.name}</CardTitle>
+          <Card key={program.id} className="border-slate-200">
+            <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0 pb-2">
+              <CardTitle className="text-sm sm:text-base">{program.name}</CardTitle>
               <div className="flex space-x-2">
                 <Button variant="outline" size="sm" onClick={() => handleEdit(program)}>
                   <Edit className="w-4 h-4" />
@@ -217,7 +217,7 @@ export function ProgramsManager() {
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">{program.description || "Sin descripción"}</p>
+              <p className="text-xs sm:text-sm text-slate-600">{program.description || "Sin descripción"}</p>
             </CardContent>
           </Card>
         ))}

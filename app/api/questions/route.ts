@@ -3,7 +3,8 @@ import { executeQuery, handleDatabaseError } from "@/lib/database"
 
 export async function GET() {
   try {
-    console.log("[v0] Fetching questions with blocks and programs...")
+    console.log("[v0] Questions API: GET request received")
+    console.log("[v0] Questions API: Fetching questions with blocks and programs...")
 
     let hasProgramId = false
     let hasDescription = false
@@ -141,10 +142,19 @@ export async function GET() {
           : null,
     }))
 
-    console.log("[v0] Questions fetched successfully:", questions.length)
+    console.log("[v0] Questions API: Successfully fetched questions count:", questions.length)
+    console.log(
+      "[v0] Questions API: Questions by block:",
+      questions.reduce((acc: any, q: any) => {
+        const blockName = q.block?.name || "No block"
+        acc[blockName] = (acc[blockName] || 0) + 1
+        return acc
+      }, {}),
+    )
+
     return NextResponse.json(questions)
   } catch (error) {
-    console.error("[v0] Error fetching questions:", error)
+    console.error("[v0] Questions API: Error fetching questions:", error)
     return handleDatabaseError(error, "Failed to fetch questions")
   }
 }

@@ -3,17 +3,17 @@ import { neon } from "@neondatabase/serverless"
 // Connection pool management
 class ConnectionPool {
   private activeConnections = 0
-  private readonly maxConnections = 3 // Reduced for better rate limiting
+  private readonly maxConnections = 2 // Further reduced from 3 to 2 for better rate limiting
   private readonly requestQueue: Array<() => void> = []
-  private readonly maxQueueSize = 10 // Limit queue size
-  private readonly minDelay = 500 // Increased minimum delay
+  private readonly maxQueueSize = 15 // Increased queue size from 10 to 15
+  private readonly minDelay = 1000 // Increased from 500ms to 1000ms minimum delay between requests
   private lastRequestTime = 0
 
   // Circuit breaker for rate limiting
   private circuitBreakerOpen = false
   private circuitBreakerTimeout: NodeJS.Timeout | null = null
   private consecutiveFailures = 0
-  private readonly maxFailures = 3
+  private readonly maxFailures = 2 // Reduced from 3 to 2 to trigger circuit breaker faster
 
   async acquireConnection(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -80,13 +80,13 @@ class ConnectionPool {
   reportFailure(): void {
     this.consecutiveFailures++
     if (this.consecutiveFailures >= this.maxFailures && !this.circuitBreakerOpen) {
-      console.log("[v0] Circuit breaker opened - pausing requests for 30 seconds")
+      console.log("[v0] Circuit breaker opened - pausing requests for 45 seconds")
       this.circuitBreakerOpen = true
       this.circuitBreakerTimeout = setTimeout(() => {
         console.log("[v0] Circuit breaker half-open - testing connection")
         this.circuitBreakerOpen = false
         this.consecutiveFailures = 0
-      }, 30000)
+      }, 45000)
     }
   }
 }
@@ -105,7 +105,7 @@ export interface SystemHealth {
 }
 
 export async function executeQuery(query: string, params: any[] = []): Promise<any[]> {
-  const maxRetries = 3 // Reduced retries to avoid overwhelming the system
+  const maxRetries = 2 // Reduced from 3 to 2 retries to avoid overwhelming the system
   let lastError: any
 
   try {
@@ -161,7 +161,7 @@ export async function executeQuery(query: string, params: any[] = []): Promise<a
         const shouldRetry = attempt < maxRetries && (isRateLimitError || isConnectionError)
 
         if (shouldRetry) {
-          const baseDelay = isRateLimitError ? 10000 : 2000
+          const baseDelay = isRateLimitError ? 15000 : 3000
           const delay = Math.min(baseDelay * Math.pow(2, attempt - 1), 60000)
 
           console.log(
