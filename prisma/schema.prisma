@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Program {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  projects    Project[]
+  questions   Question[]
+  blocks      Block[]
+  
+  @@map("programs")
+}
+
+model Block {
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  programId   String
+  order       Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  program     Program    @relation(fields: [programId], references: [id], onDelete: Cascade)
+  questions   Question[]
+  
+  @@map("blocks")
+}
+
+model Question {
+  id          String   @id @default(cuid())
+  text        String
+  description String?
+  blockId     String
+  programId   String
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  block       Block      @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  program     Program    @relation(fields: [programId], references: [id], onDelete: Cascade)
+  evaluations Evaluation[]
+  
+  @@map("questions")
+}
+
+model Team {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  projects    Project[]
+  
+  @@map("teams")
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  programId   String
+  teamId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  program     Program      @relation(fields: [programId], references: [id], onDelete: Cascade)
+  team        Team         @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  evaluations Evaluation[]
+  
+  @@map("projects")
+}
+
+model Judge {
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  token       String   @unique @default(cuid())
+  category    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  evaluations Evaluation[]
+  
+  @@map("judges")
+}
+
+model Evaluation {
+  id         String   @id @default(cuid())
+  score      Int      // 1-5 scale
+  judgeId    String
+  projectId  String
+  questionId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  judge      Judge    @relation(fields: [judgeId], references: [id], onDelete: Cascade)
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  
+  @@unique([judgeId, projectId, questionId])
+  @@map("evaluations")
+}
