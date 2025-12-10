@@ -1,8 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
 
 /* === Modern Professional Theme === */
+@custom-variant dark (&:is(.dark *));
+
 :root {
   --background: #ffffff; /* Clean white background */
   --foreground: #1e293b; /* Deep slate text */
@@ -37,6 +39,41 @@
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: #e2e8f0;
   --sidebar-ring: #0ea5e9;
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
 }
 
 @theme inline {
@@ -180,52 +217,54 @@
   body {
     font-size: 14px;
   }
-  
+
   .min-h-screen {
     padding: 1rem;
   }
-  
+
   /* Admin panel responsive */
   .max-w-7xl {
     padding: 0 0.75rem;
   }
-  
+
   h1 {
     font-size: 1.875rem !important; /* text-3xl instead of text-4xl */
   }
-  
+
   /* Tabs adjustments */
   .grid-cols-7 {
     grid-template-columns: repeat(3, 1fr) !important;
     gap: 0.25rem !important;
   }
-  
+
   /* Card adjustments */
   .card {
     padding: 1rem;
   }
-  
+
   .p-6 {
     padding: 1rem !important;
   }
-  
+
   .p-8 {
     padding: 1.5rem !important;
   }
-  
+
   /* Button adjustments */
   button {
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
   }
-  
+
   /* Table responsive */
   table {
     font-size: 0.75rem;
   }
-  
+
   /* Form elements */
-  input, textarea, select {
+  input,
+  textarea,
+  select {
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
   }
@@ -236,43 +275,45 @@
   body {
     font-size: 13px;
   }
-  
+
   .min-h-screen {
     padding: 0.5rem;
   }
-  
+
   h1 {
     font-size: 1.5rem !important; /* text-2xl */
   }
-  
+
   /* Tabs to single column on very small screens */
   .grid-cols-7 {
     grid-template-columns: repeat(2, 1fr) !important;
   }
-  
+
   .p-6 {
     padding: 0.75rem !important;
   }
-  
+
   .p-8 {
     padding: 1rem !important;
   }
-  
+
   /* Chart responsive */
   .space-y-12 {
     gap: 2rem;
   }
-  
+
   .space-y-8 {
     gap: 1.5rem;
   }
-  
+
   /* Grid responsive */
   .grid-cols-4 {
     grid-template-columns: repeat(2, 1fr) !important;
   }
-  
-  .xl\\:grid-cols-5, .lg\\:grid-cols-3, .md\\:grid-cols-2 {
+
+  .xl\\:grid-cols-5,
+  .lg\\:grid-cols-3,
+  .md\\:grid-cols-2 {
     grid-template-columns: repeat(1, 1fr) !important;
   }
 }
@@ -282,43 +323,47 @@
   body {
     font-size: 12px;
   }
-  
+
   .min-h-screen {
     padding: 0.25rem;
   }
-  
+
   h1 {
     font-size: 1.25rem !important; /* text-xl */
   }
-  
+
   /* Single column layout */
-  .grid-cols-7, .grid-cols-4, .grid-cols-3, .grid-cols-2 {
+  .grid-cols-7,
+  .grid-cols-4,
+  .grid-cols-3,
+  .grid-cols-2 {
     grid-template-columns: repeat(1, 1fr) !important;
   }
-  
-  .p-6, .p-8 {
+
+  .p-6,
+  .p-8 {
     padding: 0.5rem !important;
   }
-  
+
   /* Compact spacing */
   .space-y-12 {
     gap: 1.5rem;
   }
-  
+
   .space-y-8 {
     gap: 1rem;
   }
-  
+
   .space-y-6 {
     gap: 0.75rem;
   }
-  
+
   /* Button full width on mobile */
   .flex.gap-4 {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   button {
     width: 100%;
     padding: 0.75rem;
@@ -331,75 +376,75 @@
   .text-4xl {
     font-size: 1.5rem !important; /* Smaller main titles */
   }
-  
+
   .text-3xl {
     font-size: 1.25rem !important; /* Smaller section titles */
   }
-  
+
   .text-2xl {
     font-size: 1.125rem !important; /* Smaller card titles */
   }
-  
+
   /* Progress bar container */
   .w-72 {
     width: 100% !important;
     max-width: 280px;
   }
-  
+
   /* Tab list adjustments */
   .grid-cols-2 {
     gap: 0.25rem;
   }
-  
+
   .h-14 {
     height: 3rem !important;
   }
-  
+
   .h-12 {
     height: 2.5rem !important;
   }
-  
+
   /* Program cards */
   .rounded-2xl.p-8 {
     padding: 1rem !important;
     margin-bottom: 1rem;
   }
-  
+
   /* Project grid - force single column */
   .grid.md\\:grid-cols-2.lg\\:grid-cols-3 {
     grid-template-columns: 1fr !important;
   }
-  
+
   /* Project cards */
   .cursor-pointer.transition-all.duration-300 {
     margin-bottom: 0.75rem;
   }
-  
+
   /* Badge adjustments */
   .px-6.py-3 {
     padding: 0.5rem 1rem !important;
   }
-  
+
   .text-xl.font-bold {
     font-size: 1rem !important;
   }
-  
+
   /* Card content */
   .pb-4 {
     padding-bottom: 0.75rem !important;
   }
-  
+
   /* Icons adjustments */
   .w-10.h-10 {
     width: 2rem !important;
     height: 2rem !important;
   }
-  
+
   /* Evaluation form adjustments */
   .space-y-8 {
     gap: 1.5rem;
   }
-  
+
   /* Progress bars in cards */
   .h-3 {
     height: 0.5rem !important;
@@ -411,23 +456,23 @@
   .text-4xl {
     font-size: 1.25rem !important;
   }
-  
+
   .text-3xl {
     font-size: 1.125rem !important;
   }
-  
+
   .text-2xl {
     font-size: 1rem !important;
   }
-  
+
   .text-xl {
     font-size: 0.875rem !important;
   }
-  
+
   .text-lg {
     font-size: 0.875rem !important;
   }
-  
+
   /* Program section headers */
   .flex.items-center.gap-6 {
     flex-direction: column !important;
@@ -435,58 +480,58 @@
     align-items: center !important;
     text-align: center !important;
   }
-  
+
   .flex.items-center.justify-between.mb-8 {
     flex-direction: column !important;
     gap: 1rem !important;
     align-items: center !important;
   }
-  
+
   /* Progress container */
   .w-72 {
     width: 100% !important;
     max-width: 240px;
   }
-  
+
   /* Card padding */
   .rounded-2xl.p-8 {
     padding: 0.75rem !important;
   }
-  
+
   /* Tab triggers - smaller text and icons */
   .text-base {
     font-size: 0.75rem !important;
   }
-  
+
   .w-5.h-5 {
     width: 1rem !important;
     height: 1rem !important;
   }
-  
+
   .gap-3 {
     gap: 0.5rem !important;
   }
-  
+
   /* Evaluation cards - more compact */
   .space-y-4 {
     gap: 0.75rem;
   }
-  
+
   .space-y-2 {
     gap: 0.5rem;
   }
-  
+
   /* Alert icons */
   .w-20.h-20 {
     width: 3rem !important;
     height: 3rem !important;
   }
-  
+
   /* No projects message */
   .py-16 {
     padding: 2rem 0 !important;
   }
-  
+
   /* Badge text size */
   .font-bold.px-4.py-2.text-sm {
     font-size: 0.75rem !important;
@@ -499,63 +544,70 @@
   .min-h-screen {
     padding: 0.25rem !important;
   }
-  
+
   /* Header very compact */
   .mb-8 {
     margin-bottom: 1rem !important;
   }
-  
+
   .space-y-8 {
     gap: 1rem !important;
   }
-  
+
   /* Program cards ultra compact */
   .rounded-2xl.p-8 {
     padding: 0.5rem !important;
     border-radius: 0.75rem !important;
   }
-  
+
   /* Typography ultra small */
-  .text-4xl, .text-3xl, .text-2xl, .text-xl, .text-lg {
+  .text-4xl,
+  .text-3xl,
+  .text-2xl,
+  .text-xl,
+  .text-lg {
     font-size: 0.875rem !important;
   }
-  
+
   /* Progress bar smaller */
   .w-72 {
     max-width: 200px !important;
   }
-  
+
   /* Tabs vertical on very small screens */
   .grid.w-full.grid-cols-2 {
     display: flex !important;
     flex-direction: column !important;
     gap: 0.25rem !important;
   }
-  
-  .h-14, .h-12 {
+
+  .h-14,
+  .h-12 {
     height: 2rem !important;
   }
-  
+
   /* Ultra compact cards */
   .pb-4 {
     padding-bottom: 0.5rem !important;
   }
-  
+
   .space-y-4 {
     gap: 0.5rem;
   }
-  
+
   /* Icons ultra small */
-  .w-10.h-10, .w-5.h-5, .w-4.h-4 {
+  .w-10.h-10,
+  .w-5.h-5,
+  .w-4.h-4 {
     width: 0.875rem !important;
     height: 0.875rem !important;
   }
-  
+
   /* Remove hover effects on touch devices */
   .cursor-pointer:hover {
     transform: none !important;
   }
-  
+
   .hover\\:shadow-xl:hover {
     box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important;
   }
@@ -567,26 +619,26 @@
   .space-y-6 {
     gap: 1rem !important;
   }
-  
+
   /* Star rating container */
   .flex.gap-2.justify-center {
     gap: 0.25rem !important;
     flex-wrap: wrap !important;
     justify-content: center !important;
   }
-  
+
   /* Star buttons */
   [class*="w-12"][class*="h-12"] {
     width: 2.5rem !important;
     height: 2.5rem !important;
   }
-  
+
   /* Question text */
   [class*="text-lg"][class*="font-semibold"] {
     font-size: 1rem !important;
     line-height: 1.4 !important;
   }
-  
+
   /* Block headers in evaluation */
   [class*="bg-gradient-to-r"] {
     padding: 1rem !important;
@@ -599,26 +651,26 @@
     width: 2rem !important;
     height: 2rem !important;
   }
-  
+
   .flex.gap-2.justify-center {
     gap: 0.125rem !important;
   }
-  
+
   /* Question cards more compact */
   .space-y-6 {
     gap: 0.75rem !important;
   }
-  
+
   /* Evaluation form cards */
   [class*="border-2"] {
     margin: 0.5rem 0 !important;
   }
-  
+
   /* Question numbers and text */
   [class*="text-sm"][class*="font-medium"] {
     font-size: 0.75rem !important;
   }
-  
+
   [class*="text-lg"][class*="font-semibold"] {
     font-size: 0.875rem !important;
     line-height: 1.3 !important;
@@ -631,24 +683,24 @@
     width: 1.75rem !important;
     height: 1.75rem !important;
   }
-  
+
   /* Stack stars in two rows if needed */
   .flex.gap-2.justify-center {
     max-width: 280px !important;
     margin: 0 auto !important;
   }
-  
+
   /* Question text very small */
   [class*="text-lg"][class*="font-semibold"] {
     font-size: 0.8rem !important;
     line-height: 1.2 !important;
   }
-  
+
   /* Evaluation form ultra compact */
   .space-y-6 {
     gap: 0.5rem !important;
   }
-  
+
   /* Remove some padding */
   [class*="bg-gradient-to-r"] {
     padding: 0.75rem !important;
