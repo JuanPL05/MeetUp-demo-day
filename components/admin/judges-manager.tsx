@@ -81,7 +81,9 @@ export function JudgesManager() {
   }
 
   const handleCloseVoting = async () => {
-    if (!confirm("¿Estás seguro de que quieres cerrar la votación? Esto deshabilitará todos los enlaces de los jueces.")) {
+    if (
+      !confirm("¿Estás seguro de que quieres cerrar la votación? Esto deshabilitará todos los enlaces de los jueces.")
+    ) {
       return
     }
 
@@ -111,16 +113,16 @@ export function JudgesManager() {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Gestión de Jueces</h2>
-        <div className="flex gap-2">
-          <Button 
-            variant="destructive" 
+      <div className="flex flex-col gap-3">
+        <h2 className="text-xl sm:text-2xl font-bold">Gestión de Jueces</h2>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-2">
+          <Button
+            variant="destructive"
             onClick={handleCloseVoting}
-            className="flex items-center gap-2"
+            className="flex items-center justify-center gap-2 w-full sm:w-auto"
           >
             <Lock className="w-4 h-4" />
-            Cerrar Votación
+            <span className="text-sm">Cerrar Votación</span>
           </Button>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
@@ -129,12 +131,13 @@ export function JudgesManager() {
                   setEditingJudge(null)
                   setFormData({ name: "", email: "" })
                 }}
+                className="w-full sm:w-auto"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Agregar Juez
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="w-[95vw] max-w-md">
               <DialogHeader>
                 <DialogTitle>{editingJudge ? "Editar Juez" : "Agregar Juez"}</DialogTitle>
               </DialogHeader>
@@ -167,34 +170,57 @@ export function JudgesManager() {
         </div>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid gap-3 sm:gap-4">
         {judges.map((judge) => (
-          <Card key={judge.id}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <div className="space-y-1">
-                <CardTitle className="text-base">{judge.name}</CardTitle>
-                <Badge variant="outline">{judge.email}</Badge>
-              </div>
-              <div className="flex space-x-2">
-                <Button variant="outline" size="sm" onClick={() => copyJudgeLink(judge.token)} title="Copiar enlace">
-                  <Copy className="w-4 h-4" />
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => openJudgeLink(judge.token)} title="Abrir enlace">
-                  <ExternalLink className="w-4 h-4" />
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => handleEdit(judge)}>
-                  <Edit className="w-4 h-4" />
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => handleDelete(judge.id)}>
-                  <Trash2 className="w-4 h-4" />
-                </Button>
+          <Card key={judge.id} className="border-slate-200">
+            <CardHeader className="flex flex-col space-y-2 pb-2">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                <div className="space-y-1 flex-1">
+                  <CardTitle className="text-sm sm:text-base">{judge.name}</CardTitle>
+                  <Badge variant="outline" className="text-xs">
+                    {judge.email}
+                  </Badge>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => copyJudgeLink(judge.token)}
+                    title="Copiar enlace"
+                    className="flex-1 sm:flex-none"
+                  >
+                    <Copy className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openJudgeLink(judge.token)}
+                    title="Abrir enlace"
+                    className="flex-1 sm:flex-none"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => handleEdit(judge)} className="flex-1 sm:flex-none">
+                    <Edit className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDelete(judge.id)}
+                    className="flex-1 sm:flex-none"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-muted-foreground font-mono">
+              <p className="text-xs text-slate-600 break-all">
                 Token: {judge.token}
-                {judge.token.startsWith('DISABLED_') && (
-                  <Badge variant="destructive" className="ml-2 text-xs">DESHABILITADO</Badge>
+                {judge.token.startsWith("DISABLED_") && (
+                  <Badge variant="destructive" className="ml-2 text-xs">
+                    DESHABILITADO
+                  </Badge>
                 )}
               </p>
             </CardContent>

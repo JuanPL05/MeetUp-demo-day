@@ -11,31 +11,47 @@ import { SeedManager } from "@/components/admin/seed-manager"
 
 export default function AdminPage() {
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-green-50/30 p-3 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-2 retro-glow">PANEL DE ADMINISTRACIÓN</h1>
-          <p className="text-muted-foreground font-mono">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent mb-2">
+            Panel de Administración
+          </h1>
+          <p className="text-sm sm:text-base text-slate-600">
             Gestiona programas, equipos, proyectos, jueces y evaluaciones
           </p>
         </div>
 
-        <Tabs defaultValue="seed" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7 gap-2">
-            <TabsTrigger value="seed" className="text-sm">Datos</TabsTrigger>
-            <TabsTrigger value="programs" className="text-sm">Programas</TabsTrigger>
-            <TabsTrigger value="blocks" className="text-sm">Bloques</TabsTrigger>
-            <TabsTrigger value="questions" className="text-sm">Preguntas</TabsTrigger>
-            <TabsTrigger value="teams" className="text-sm">Área</TabsTrigger>
-            <TabsTrigger value="projects" className="text-sm">Equipos participantes</TabsTrigger>
-            <TabsTrigger value="judges" className="text-sm">Jueces</TabsTrigger>
+        <Tabs defaultValue="seed" className="space-y-4 sm:space-y-6">
+          <TabsList className="w-full grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-1 sm:gap-2 h-auto p-1">
+            <TabsTrigger value="seed" className="text-xs sm:text-sm py-2">
+              Datos
+            </TabsTrigger>
+            <TabsTrigger value="programs" className="text-xs sm:text-sm py-2">
+              Programas
+            </TabsTrigger>
+            <TabsTrigger value="blocks" className="text-xs sm:text-sm py-2">
+              Bloques
+            </TabsTrigger>
+            <TabsTrigger value="questions" className="text-xs sm:text-sm py-2">
+              Preguntas
+            </TabsTrigger>
+            <TabsTrigger value="teams" className="text-xs sm:text-sm py-2">
+              Área
+            </TabsTrigger>
+            <TabsTrigger value="projects" className="text-xs sm:text-sm py-2">
+              Equipos
+            </TabsTrigger>
+            <TabsTrigger value="judges" className="text-xs sm:text-sm py-2">
+              Jueces
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="seed">
-            <Card className="retro-border">
+            <Card className="border-blue-200 shadow-lg">
               <CardHeader>
-                <CardTitle className="retro-glow">Gestión de Datos</CardTitle>
-                <CardDescription className="font-mono">Poblar la base de datos con datos de ejemplo</CardDescription>
+                <CardTitle className="text-lg sm:text-xl text-blue-600">Gestión de Datos</CardTitle>
+                <CardDescription className="text-sm">Poblar la base de datos con datos de ejemplo</CardDescription>
               </CardHeader>
               <CardContent>
                 <SeedManager />
@@ -44,10 +60,10 @@ export default function AdminPage() {
           </TabsContent>
 
           <TabsContent value="programs">
-            <Card className="retro-border">
+            <Card className="border-blue-200 shadow-lg">
               <CardHeader>
-                <CardTitle className="retro-glow">Gestión de Programas</CardTitle>
-                <CardDescription className="font-mono">
+                <CardTitle className="text-lg sm:text-xl text-blue-600">Gestión de Programas</CardTitle>
+                <CardDescription className="text-sm">
                   Administra los programas de incubación y aceleración
                 </CardDescription>
               </CardHeader>
@@ -58,10 +74,10 @@ export default function AdminPage() {
           </TabsContent>
 
           <TabsContent value="blocks">
-            <Card className="retro-border">
+            <Card className="border-blue-200 shadow-lg">
               <CardHeader>
-                <CardTitle className="retro-glow">Gestión de bloques de preguntas</CardTitle>
-                <CardDescription className="font-mono">Organiza las categorías de evaluación</CardDescription>
+                <CardTitle className="text-lg sm:text-xl text-blue-600">Gestión de bloques de preguntas</CardTitle>
+                <CardDescription className="text-sm">Organiza las categorías de evaluación</CardDescription>
               </CardHeader>
               <CardContent>
                 <BlocksManager />
@@ -70,10 +86,10 @@ export default function AdminPage() {
           </TabsContent>
 
           <TabsContent value="questions">
-            <Card className="retro-border">
+            <Card className="border-blue-200 shadow-lg">
               <CardHeader>
-                <CardTitle className="retro-glow">Gestión de Preguntas</CardTitle>
-                <CardDescription className="font-mono">Define las preguntas de evaluación por bloque</CardDescription>
+                <CardTitle className="text-lg sm:text-xl text-blue-600">Gestión de Preguntas</CardTitle>
+                <CardDescription className="text-sm">Define las preguntas de evaluación por bloque</CardDescription>
               </CardHeader>
               <CardContent>
                 <QuestionsManager />
@@ -82,10 +98,10 @@ export default function AdminPage() {
           </TabsContent>
 
           <TabsContent value="teams">
-            <Card className="retro-border">
+            <Card className="border-blue-200 shadow-lg">
               <CardHeader>
-                <CardTitle className="retro-glow">Gestión de áreas</CardTitle>
-                <CardDescription className="font-mono">Administra las áreas de los equipos participantes</CardDescription>
+                <CardTitle className="text-lg sm:text-xl text-blue-600">Gestión de áreas</CardTitle>
+                <CardDescription className="text-sm">Administra las áreas de los equipos participantes</CardDescription>
               </CardHeader>
               <CardContent>
                 <TeamsManager />
@@ -94,10 +110,10 @@ export default function AdminPage() {
           </TabsContent>
 
           <TabsContent value="projects">
-            <Card className="retro-border">
+            <Card className="border-blue-200 shadow-lg">
               <CardHeader>
-                <CardTitle className="retro-glow">Gestión de Proyectos</CardTitle>
-                <CardDescription className="font-mono">Administra los proyectos de cada equipo</CardDescription>
+                <CardTitle className="text-lg sm:text-xl text-blue-600">Gestión de Proyectos</CardTitle>
+                <CardDescription className="text-sm">Administra los proyectos de cada equipo</CardDescription>
               </CardHeader>
               <CardContent>
                 <ProjectsManager />
@@ -106,10 +122,10 @@ export default function AdminPage() {
           </TabsContent>
 
           <TabsContent value="judges">
-            <Card className="retro-border">
+            <Card className="border-blue-200 shadow-lg">
               <CardHeader>
-                <CardTitle className="retro-glow">Gestión de Jueces</CardTitle>
-                <CardDescription className="font-mono">Administra los jueces evaluadores</CardDescription>
+                <CardTitle className="text-lg sm:text-xl text-blue-600">Gestión de Jueces</CardTitle>
+                <CardDescription className="text-sm">Administra los jueces evaluadores</CardDescription>
               </CardHeader>
               <CardContent>
                 <JudgesManager />
@@ -118,12 +134,10 @@ export default function AdminPage() {
           </TabsContent>
         </Tabs>
 
-        {/* Footer */}
-        <div className="text-center mt-12 pt-8 border-t border-border">
-          <p className="text-muted-foreground font-mono text-sm">
-            DESARROLLADO POR{" "}
-            <span className="text-primary font-bold retro-glow">CONCEPTUAL DYNAMIC</span>
-            {" "}• SOLUCIONES TECNOLÓGICAS INNOVADORAS
+        <div className="text-center mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-slate-200">
+          <p className="text-xs sm:text-sm text-slate-600">
+            Desarrollado por <span className="text-blue-600 font-bold">CONCEPTUAL DYNAMIC</span> • Soluciones
+            Tecnológicas Innovadoras
           </p>
         </div>
       </div>
