@@ -358,7 +358,7 @@ export default function JudgeEvaluationPage() {
           <TabsList className="grid w-full grid-cols-2 bg-white border-2 border-blue-300 shadow-lg h-10 rounded-xl leading-9 opacity-100 my-0 px-1 py-1 md:h-14">
             <TabsTrigger
               value="evaluation"
-              className="flex items-center gap-1 md:gap-2 font-bold text-sm md:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-green-500 data-[state=active]:text-white rounded-lg transition-all leading-7"
+              className="flex items-center gap-1 md:gap-2 font-bold text-sm md:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-green-500 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:text-slate-700 rounded-lg transition-all leading-7"
             >
               <ClipboardList className="w-3 h-3 md:w-4 md:h-4" />
               <span className="hidden sm:inline">Evaluación</span>
@@ -366,7 +366,7 @@ export default function JudgeEvaluationPage() {
             </TabsTrigger>
             <TabsTrigger
               value="dashboard"
-              className="flex items-center gap-1 md:gap-2 font-bold text-sm md:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-green-500 data-[state=active]:text-white rounded-lg transition-all bg-secondary-foreground text-popover"
+              className="flex items-center gap-1 md:gap-2 font-bold text-sm md:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-green-500 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:text-slate-700 rounded-lg transition-all"
             >
               <BarChart3 className="w-3 h-3 md:w-4 md:h-4" />
               <span className="hidden sm:inline">Dashboard</span>
@@ -650,50 +650,18 @@ export default function JudgeEvaluationPage() {
 
               {/* Conditional Content Based on Selection */}
               {dashboardView === "ranking" && (
-                <Card className="border-slate-200 shadow-lg bg-white">
-                  <CardHeader className="bg-slate-50 border-b border-slate-200 p-6">
-                    <CardTitle className="flex items-center gap-3 text-xl md:text-2xl text-slate-900 font-bold">
-                      <Trophy className="w-6 h-6 md:w-7 md:h-7 text-primary" />
-                      Tabla de Posiciones
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-4 md:p-6">
-                    <RankingTable
-                      projects={dashboardData}
-                      onProjectSelect={setSelectedDashboardProject}
-                      selectedProject={selectedDashboardProject}
-                    />
-                  </CardContent>
-                </Card>
+                <RankingTable
+                  projects={dashboardData}
+                  onProjectSelect={setSelectedDashboardProject}
+                  selectedProject={selectedDashboardProject}
+                />
               )}
 
-              {dashboardView === "analysis" && (
-                <Card className="border-slate-200 shadow-lg bg-white">
-                  <CardHeader className="bg-slate-50 border-b border-slate-200 p-6">
-                    <CardTitle className="flex items-center gap-3 text-xl md:text-2xl text-slate-900 font-bold">
-                      <BarChart3 className="w-6 h-6 md:w-7 md:h-7 text-accent" />
-                      Análisis por Programa
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-4 md:p-6">
-                    <ScoreChart projects={dashboardData} />
-                  </CardContent>
-                </Card>
-              )}
+              {dashboardView === "analysis" && <ScoreChart projects={dashboardData} />}
 
               {/* Project Details (shown when a project is selected in ranking) */}
               {selectedDashboardProject && dashboardView === "ranking" && (
-                <Card className="border-slate-200 shadow-lg bg-white">
-                  <CardHeader className="bg-slate-50 border-b border-slate-200 p-6">
-                    <CardTitle className="flex items-center gap-3 text-xl md:text-2xl text-slate-900 font-bold">
-                      <BarChart3 className="w-6 h-6 md:w-7 md:h-7 text-accent" />
-                      Análisis Detallado del Proyecto
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-4 md:p-6">
-                    <ProjectDetails project={dashboardData.find((p: any) => p.id === selectedDashboardProject)} />
-                  </CardContent>
-                </Card>
+                <ProjectDetails project={dashboardData.find((p: any) => p.id === selectedDashboardProject)} />
               )}
             </div>
           </TabsContent>
