@@ -32,6 +32,7 @@ interface Project {
   teamDescription?: string
   evaluationsCount: number
   averageScore: number
+  programId?: string
 }
 
 interface Block {
@@ -166,36 +167,21 @@ export default function JudgeEvaluationPage() {
     const project = projects.find((p) => p.id === projectId)
     if (!project) return questions
 
-    // Filter questions by program type
     const filteredQuestions = questions.filter((q) => {
-      // If question has programId, match it with project's program
-      if (q.programId) {
-        const projectProgram = project.program?.toLowerCase()
-        const questionProgram = q.programId?.toLowerCase()
-
-        if (projectProgram?.includes("incubación") || projectProgram?.includes("incubacion")) {
-          return questionProgram?.includes("incubation") || questionProgram?.includes("incubación")
-        }
-        if (projectProgram?.includes("aceleración") || projectProgram?.includes("aceleracion")) {
-          return questionProgram?.includes("acceleration") || questionProgram?.includes("aceleración")
-        }
+      // Match question's programId with project's programId
+      if (q.programId && project.programId) {
+        return q.programId === project.programId
       }
 
       // If no programId, include all questions (backward compatibility)
       return true
     })
 
-    // Debug: Log filtered questions
-    console.log("[DEBUG] Filtering questions for project:", {
+    console.log("[v0] Filtering questions for project:", {
       projectName: project.name,
-      projectProgram: project.program,
+      projectProgramId: project.programId,
       totalQuestions: questions.length,
       filteredQuestionsCount: filteredQuestions.length,
-      sampleFilteredQuestions: filteredQuestions.slice(0, 3).map((q) => ({
-        id: q.id,
-        text: q.text?.substring(0, 50) + "...",
-        programId: q.programId,
-      })),
     })
 
     return filteredQuestions
@@ -359,7 +345,7 @@ export default function JudgeEvaluationPage() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-4 sm:mb-6 md:mb-8">
-          <TabsList className="grid w-full grid-cols-2 bg-white border-2 border-blue-300 shadow-lg h-10 sm:h-12 md:h-14 rounded-lg sm:rounded-xl px-1 py-1">
+          <TabsList className="grid w-full grid-cols-2 bg-white border-blue-300 shadow-lg h-10 sm:h-12 md:h-14 rounded-lg sm:rounded-xl px-1 py-1 border">
             <TabsTrigger
               value="evaluation"
               className="flex items-center justify-center gap-1 sm:gap-2 font-bold text-xs sm:text-sm md:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-green-500 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:text-slate-700 rounded-md sm:rounded-lg transition-all"
@@ -434,6 +420,17 @@ export default function JudgeEvaluationPage() {
                                     <span className="sm:hidden">✓</span>
                                   </Badge>
                                 )}
+                              </div>
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                                  {project.program}
+                                </Badge>
+                                <Badge
+                                  variant="outline"
+                                  className="text-xs bg-purple-50 text-purple-700 border-purple-200"
+                                >
+                                  {project.team}
+                                </Badge>
                               </div>
                               {project.description && (
                                 <p className="text-xs sm:text-sm text-slate-600 mt-1 sm:mt-2 line-clamp-2">
