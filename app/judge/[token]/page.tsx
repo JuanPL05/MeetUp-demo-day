@@ -1,9 +1,11 @@
 "use client"
 
+import { CardDescription } from "@/components/ui/card"
+
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import useSWR from "swr"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -11,7 +13,8 @@ import { EvaluationForm } from "@/components/judge/evaluation-form"
 import { RankingTable } from "@/components/dashboard/ranking-table"
 import { ScoreChart } from "@/components/dashboard/score-chart"
 import { ProjectDetails } from "@/components/dashboard/project-details"
-import { AlertCircle, CheckCircle, Clock, Trophy, BarChart3, Users, ClipboardList } from "lucide-react"
+import { AlertCircle, CheckCircle, Clock, Trophy, BarChart3, Users, ClipboardList, FileText, Star } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -29,6 +32,8 @@ interface Project {
   program: string
   team: string
   teamDescription?: string
+  evaluationsCount: number
+  averageScore: number
 }
 
 interface Block {
@@ -70,6 +75,7 @@ export default function JudgeEvaluationPage() {
   const [tokenError, setTokenError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState("evaluation")
   const [activeBlock, setActiveBlock] = useState<string | null>(null)
+  const [dashboardView, setDashboardView] = useState<"ranking" | "analysis">("ranking")
 
   console.log("[v0] EVALUATION PANEL: Starting with token:", token)
 
@@ -540,39 +546,143 @@ export default function JudgeEvaluationPage() {
 
           <TabsContent value="dashboard" className="mt-6">
             <div className="space-y-6">
-              <Card className="border-slate-200 shadow-lg bg-white">
-                <CardHeader className="bg-slate-50 border-b border-slate-200 p-6">
-                  <CardTitle className="flex items-center gap-3 text-xl md:text-2xl text-slate-900 font-bold">
-                    <Trophy className="w-6 h-6 md:w-7 md:h-7 text-primary" />
-                    Ranking y Análisis de Proyectos
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-4 md:p-6">
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                        <Trophy className="w-5 h-5 text-primary" />
-                        Tabla de Posiciones
-                      </h3>
-                      <RankingTable
-                        projects={dashboardData}
-                        onProjectSelect={setSelectedDashboardProject}
-                        selectedProject={selectedDashboardProject}
-                      />
+              {/* Statistics Cards Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Proyectos Totales */}
+                <Card className="border-slate-200 shadow-md bg-white hover:shadow-lg transition-shadow">
+                  <CardHeader className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-slate-600 mb-1">Proyectos Totales</p>
+                        <p className="text-3xl font-bold text-slate-900">{dashboardData.length}</p>
+                      </div>
+                      <div className="bg-blue-100 p-3 rounded-xl">
+                        <Trophy className="w-6 h-6 text-primary" />
+                      </div>
                     </div>
+                  </CardHeader>
+                </Card>
 
-                    <div className="border-t border-slate-200 pt-6">
-                      <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                        <BarChart3 className="w-5 h-5 text-accent" />
-                        Comparación de Promedios
-                      </h3>
-                      <ScoreChart projects={dashboardData} />
+                {/* Proyectos en Evaluación */}
+                <Card className="border-slate-200 shadow-md bg-white hover:shadow-lg transition-shadow">
+                  <CardHeader className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-slate-600 mb-1">Proyectos en Evaluación</p>
+                        <p className="text-3xl font-bold text-slate-900">
+                          {dashboardData.filter((p: any) => p.evaluationsCount > 0).length}
+                        </p>
+                      </div>
+                      <div className="bg-green-100 p-3 rounded-xl">
+                        <FileText className="w-6 h-6 text-accent" />
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardHeader>
+                </Card>
 
-              {selectedDashboardProject && (
+                {/* Evaluaciones Completadas */}
+                <Card className="border-slate-200 shadow-md bg-white hover:shadow-lg transition-shadow">
+                  <CardHeader className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-slate-600 mb-1">Evaluaciones Completadas</p>
+                        <p className="text-3xl font-bold text-slate-900">
+                          {dashboardData.filter((p: any) => p.evaluationsCount > 0).length}
+                        </p>
+                        <p className="text-xs text-slate-500 mt-1">de {dashboardData.length} proyectos</p>
+                      </div>
+                      <div className="bg-purple-100 p-3 rounded-xl">
+                        <CheckCircle className="w-6 h-6 text-purple-600" />
+                      </div>
+                    </div>
+                  </CardHeader>
+                </Card>
+
+                {/* Puntuación Promedio */}
+                <Card className="border-slate-200 shadow-md bg-white hover:shadow-lg transition-shadow">
+                  <CardHeader className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-slate-600 mb-1">Puntuación Promedio</p>
+                        <p className="text-3xl font-bold text-slate-900">
+                          {dashboardData.length > 0
+                            ? (
+                                dashboardData.reduce((acc: number, p: any) => acc + (p.averageScore || 0), 0) /
+                                dashboardData.length
+                              ).toFixed(1)
+                            : "0.0"}
+                        </p>
+                        <p className="text-xs text-slate-500 mt-1">Promedio general</p>
+                      </div>
+                      <div className="bg-amber-100 p-3 rounded-xl">
+                        <Star className="w-6 h-6 text-amber-600" />
+                      </div>
+                    </div>
+                  </CardHeader>
+                </Card>
+              </div>
+
+              {/* Toggle Buttons for Ranking and Analysis */}
+              <div className="flex gap-3 justify-center">
+                <Button
+                  onClick={() => setDashboardView("ranking")}
+                  className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                    dashboardView === "ranking"
+                      ? "bg-primary text-white shadow-md"
+                      : "bg-white text-slate-700 border-2 border-slate-200 hover:border-primary hover:text-primary"
+                  }`}
+                >
+                  <Trophy className="w-5 h-5 mr-2" />
+                  Ranking
+                </Button>
+                <Button
+                  onClick={() => setDashboardView("analysis")}
+                  className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                    dashboardView === "analysis"
+                      ? "bg-primary text-white shadow-md"
+                      : "bg-white text-slate-700 border-2 border-slate-200 hover:border-primary hover:text-primary"
+                  }`}
+                >
+                  <BarChart3 className="w-5 h-5 mr-2" />
+                  Análisis
+                </Button>
+              </div>
+
+              {/* Conditional Content Based on Selection */}
+              {dashboardView === "ranking" && (
+                <Card className="border-slate-200 shadow-lg bg-white">
+                  <CardHeader className="bg-slate-50 border-b border-slate-200 p-6">
+                    <CardTitle className="flex items-center gap-3 text-xl md:text-2xl text-slate-900 font-bold">
+                      <Trophy className="w-6 h-6 md:w-7 md:h-7 text-primary" />
+                      Tabla de Posiciones
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4 md:p-6">
+                    <RankingTable
+                      projects={dashboardData}
+                      onProjectSelect={setSelectedDashboardProject}
+                      selectedProject={selectedDashboardProject}
+                    />
+                  </CardContent>
+                </Card>
+              )}
+
+              {dashboardView === "analysis" && (
+                <Card className="border-slate-200 shadow-lg bg-white">
+                  <CardHeader className="bg-slate-50 border-b border-slate-200 p-6">
+                    <CardTitle className="flex items-center gap-3 text-xl md:text-2xl text-slate-900 font-bold">
+                      <BarChart3 className="w-6 h-6 md:w-7 md:h-7 text-accent" />
+                      Análisis por Programa
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4 md:p-6">
+                    <ScoreChart projects={dashboardData} />
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Project Details (shown when a project is selected in ranking) */}
+              {selectedDashboardProject && dashboardView === "ranking" && (
                 <Card className="border-slate-200 shadow-lg bg-white">
                   <CardHeader className="bg-slate-50 border-b border-slate-200 p-6">
                     <CardTitle className="flex items-center gap-3 text-xl md:text-2xl text-slate-900 font-bold">
