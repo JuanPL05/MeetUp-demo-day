@@ -1,7 +1,5 @@
 "use client"
 
-import { CardDescription } from "@/components/ui/card"
-
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import useSWR from "swr"
@@ -260,6 +258,10 @@ export default function JudgeEvaluationPage() {
 
   const { totalQuestions, totalEvaluations, completedEvaluations, progressPercentage } = getProgressCalculation()
 
+  const handleProjectSelect = (projectId: string) => {
+    setSelectedProject(projectId)
+  }
+
   if (tokenError) {
     console.log("[v0] EVALUATION PANEL: Showing token error")
     return (
@@ -330,17 +332,19 @@ export default function JudgeEvaluationPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="max-w-7xl mx-auto p-3 sm:p-4 md:p-6">
-        <div className="mb-6 md:mb-8 bg-white rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg border border-slate-200">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl font-bold mb-2 text-primary-foreground sm:text-5xl">Panel de Evaluación</h1>
-              <p className="text-base sm:text-lg text-slate-600">
+      <div className="max-w-7xl mx-auto p-3 sm:p-4 md:p-6 lg:p-8">
+        <div className="mb-4 sm:mb-6 md:mb-8 bg-white rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6 lg:p-8 shadow-lg border border-slate-200">
+          <div className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="text-center md:text-left">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2 text-slate-900">
+                Panel de Evaluación
+              </h1>
+              <p className="text-sm sm:text-base md:text-lg text-slate-600">
                 Bienvenido, <span className="text-primary font-semibold">{judge?.name || "Juez"}</span>
               </p>
             </div>
-            <div className="bg-slate-50 rounded-lg md:rounded-xl p-3 md:p-4 border border-slate-200">
-              <div className="flex items-center gap-2 md:gap-3 mb-2">
+            <div className="bg-slate-50 rounded-lg md:rounded-xl p-3 md:p-4 border border-slate-200 w-full md:w-auto">
+              <div className="flex items-center gap-2 md:gap-3 mb-2 justify-center md:justify-start">
                 <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-accent flex-shrink-0" />
                 <span className="text-xs sm:text-sm font-medium text-slate-700">
                   {completedEvaluations} de {totalEvaluations} equipos evaluados
@@ -354,126 +358,118 @@ export default function JudgeEvaluationPage() {
           </div>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6 md:mb-8">
-          <TabsList className="grid w-full grid-cols-2 bg-white border-2 border-blue-300 shadow-lg h-10 rounded-xl leading-9 opacity-100 my-0 px-1 py-1 md:h-14">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-4 sm:mb-6 md:mb-8">
+          <TabsList className="grid w-full grid-cols-2 bg-white border-2 border-blue-300 shadow-lg h-10 sm:h-12 md:h-14 rounded-lg sm:rounded-xl px-1 py-1">
             <TabsTrigger
               value="evaluation"
-              className="flex items-center gap-1 md:gap-2 font-bold text-sm md:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-green-500 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:text-slate-700 rounded-lg transition-all leading-7"
+              className="flex items-center justify-center gap-1 sm:gap-2 font-bold text-xs sm:text-sm md:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-green-500 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:text-slate-700 rounded-md sm:rounded-lg transition-all"
             >
-              <ClipboardList className="w-3 h-3 md:w-4 md:h-4" />
-              <span className="hidden sm:inline">Evaluación</span>
-              <span className="sm:hidden">Eval.</span>
+              <ClipboardList className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 flex-shrink-0" />
+              <span className="hidden xs:inline sm:hidden md:inline">Evaluación</span>
+              <span className="xs:hidden sm:inline md:hidden">Eval.</span>
             </TabsTrigger>
             <TabsTrigger
               value="dashboard"
-              className="flex items-center gap-1 md:gap-2 font-bold text-sm md:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-green-500 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:text-slate-700 rounded-lg transition-all"
+              className="flex items-center justify-center gap-1 sm:gap-2 font-bold text-xs sm:text-sm md:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-green-500 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:text-slate-700 rounded-md sm:rounded-lg transition-all"
             >
-              <BarChart3 className="w-3 h-3 md:w-4 md:h-4" />
-              <span className="hidden sm:inline">Dashboard</span>
-              <span className="sm:hidden">Stats</span>
+              <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 flex-shrink-0" />
+              <span className="hidden xs:inline sm:hidden md:inline">Dashboard</span>
+              <span className="xs:hidden sm:inline md:hidden">Stats</span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="evaluation" className="mt-6">
-            <div className="space-y-6">
+          <TabsContent value="evaluation" className="mt-4 sm:mt-6">
+            <div className="space-y-4 sm:space-y-6">
               <Card className="overflow-hidden border-slate-200 shadow-lg bg-white">
-                <CardHeader className="pb-6 bg-slate-50 border-b border-slate-200 p-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 md:p-4 rounded-xl bg-primary/10">
-                        <Users className="w-8 h-8 md:w-10 md:h-10 text-primary" />
+                <CardHeader className="pb-4 sm:pb-6 bg-slate-50 border-b border-slate-200 p-3 sm:p-4 md:p-6">
+                  <div className="flex flex-col gap-3 sm:gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <div className="flex items-center gap-3 sm:gap-4">
+                        <div className="p-2 sm:p-3 md:p-4 rounded-lg sm:rounded-xl bg-primary/10 flex-shrink-0">
+                          <Users className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 mb-1">
+                            Equipos Participantes
+                          </h3>
+                          <p className="text-xs sm:text-sm md:text-base text-slate-600">
+                            {projects.length} proyecto{projects.length !== 1 ? "s" : ""} disponible
+                            {projects.length !== 1 ? "s" : ""}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-1">Equipos Participantes</h3>
-                        <p className="text-sm md:text-base text-slate-600">
-                          {projects.length} proyecto{projects.length !== 1 ? "s" : ""} disponible
-                          {projects.length !== 1 ? "s" : ""}
-                        </p>
-                      </div>
+                      <Badge className="bg-primary text-white text-sm sm:text-base md:text-lg font-semibold px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 shadow-md self-center sm:self-auto">
+                        {projects.length}
+                      </Badge>
                     </div>
-                    <Badge className="bg-primary text-white text-base md:text-lg font-semibold px-4 md:px-6 py-2 shadow-md">
-                      {projects.length}
-                    </Badge>
-                  </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mt-6">
-                    {projects.map((project) => {
-                      const projectEvaluations = safeEvaluations.filter((e) => e.projectId === project.id)
-                      const projectQuestions = getQuestionsForProject(project.id)
-                      const projectQuestionCount = projectQuestions.length
-                      const projectProgress =
-                        projectQuestionCount > 0 ? (projectEvaluations.length / projectQuestionCount) * 100 : 0
-                      const isComplete = projectProgress === 100
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mt-4 sm:mt-6">
+                      {projects.map((project) => {
+                        const projectEvaluations = safeEvaluations.filter((e) => e.projectId === project.id)
+                        const projectQuestions = getQuestionsForProject(project.id)
+                        const projectQuestionCount = projectQuestions.length
+                        const projectProgress =
+                          projectQuestionCount > 0 ? (projectEvaluations.length / projectQuestionCount) * 100 : 0
+                        const isComplete = projectProgress === 100
 
-                      return (
-                        <Card
-                          key={project.id}
-                          className={`cursor-pointer transition-all duration-300 hover:shadow-xl border-2 bg-white ${
-                            selectedProject === project.id
-                              ? "ring-2 ring-primary shadow-xl border-primary"
-                              : "hover:shadow-lg border-slate-200 hover:border-primary/50"
-                          }`}
-                          onClick={() => setSelectedProject(project.id)}
-                        >
-                          <CardHeader className="pb-3 md:pb-4">
-                            <div className="flex items-center justify-between mb-3">
-                              <Badge className="bg-primary text-white font-medium px-3 py-1 text-xs md:text-sm">
-                                {project.program || "Programa"}
-                              </Badge>
-                              {isComplete && (
-                                <div className="bg-accent rounded-full p-1">
-                                  <CheckCircle className="w-4 h-4 text-white" />
-                                </div>
-                              )}
-                            </div>
-                            <CardTitle className="text-base md:text-lg font-bold text-slate-900 mb-2">
-                              {project.name}
-                            </CardTitle>
-                            <CardDescription className="text-xs md:text-sm text-slate-600 line-clamp-2 mb-3">
-                              {project.description || "Sin descripción"}
-                            </CardDescription>
-                            <div className="space-y-2">
-                              <div className="flex items-center justify-between text-xs text-slate-600">
-                                <span>Progreso</span>
-                                <span className="font-medium">{Math.round(projectProgress)}%</span>
+                        return (
+                          <Card
+                            key={project.id}
+                            onClick={() => handleProjectSelect(project.id)}
+                            className={`cursor-pointer transition-all duration-300 border-2 ${
+                              selectedProject === project.id
+                                ? "border-primary bg-primary/5 shadow-lg"
+                                : "border-slate-200 hover:border-primary/50 hover:shadow-md"
+                            }`}
+                          >
+                            <CardHeader className="pb-2 sm:pb-3 p-3 sm:p-4">
+                              <div className="flex items-start justify-between gap-2">
+                                <CardTitle className="text-sm sm:text-base md:text-lg font-bold text-slate-900 break-words flex-1">
+                                  {project.name}
+                                </CardTitle>
+                                {isComplete && (
+                                  <Badge className="bg-accent text-white flex-shrink-0 text-xs px-2 py-0.5">
+                                    <CheckCircle className="w-3 h-3 mr-1" />
+                                    <span className="hidden sm:inline">Completo</span>
+                                    <span className="sm:hidden">✓</span>
+                                  </Badge>
+                                )}
                               </div>
-                              <Progress value={projectProgress} className="h-2" />
-                            </div>
-                          </CardHeader>
-                        </Card>
-                      )
-                    })}
+                              {project.description && (
+                                <p className="text-xs sm:text-sm text-slate-600 mt-1 sm:mt-2 line-clamp-2">
+                                  {project.description}
+                                </p>
+                              )}
+                            </CardHeader>
+                            <CardContent className="pb-3 sm:pb-4 p-3 sm:p-4 pt-0">
+                              <div className="space-y-2">
+                                <div className="flex justify-between text-xs sm:text-sm font-medium">
+                                  <span className="text-slate-600">Progreso</span>
+                                  <span className="text-primary">{Math.round(projectProgress)}%</span>
+                                </div>
+                                <Progress value={projectProgress} className="h-1.5 sm:h-2" />
+                                <p className="text-xs text-slate-500">
+                                  {projectEvaluations.length} de {projectQuestionCount} preguntas
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        )
+                      })}
+                    </div>
                   </div>
                 </CardHeader>
-              </Card>
 
-              {projects.length === 0 && (
-                <div className="text-center py-16 bg-white rounded-2xl border-2 border-blue-200 shadow-xl">
-                  <AlertCircle className="w-20 h-20 mx-auto mb-6 text-blue-400" />
-                  <h3 className="text-2xl font-bold mb-3 text-slate-800">No hay proyectos disponibles</h3>
-                  <p className="text-slate-600 text-lg">
-                    No se encontraron proyectos para evaluar. Contacta al administrador.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {selectedProject && (
-              <div className="mt-6 md:mt-8">
-                <Card className="border-slate-200 shadow-lg bg-white">
-                  <CardHeader className="bg-slate-50 border-b border-slate-200 p-4 md:p-6">
-                    <CardTitle className="flex flex-wrap items-center gap-2 md:gap-4 text-base md:text-xl">
-                      <div className="w-1 h-8 bg-primary rounded-full"></div>
-                      <span className="break-words flex-1 min-w-0 text-slate-900 font-bold">
-                        Evaluando: {projects.find((p) => p.id === selectedProject)?.name}
-                      </span>
-                      <Badge className="bg-slate-100 text-slate-700 border border-slate-300 text-xs md:text-sm px-3 py-1 font-medium">
-                        {projects.find((p) => p.id === selectedProject)?.program}
-                      </Badge>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-4 md:p-8">
-                    {(() => {
+                <CardContent className="p-3 sm:p-4 md:p-6">
+                  {!selectedProject ? (
+                    <div className="text-center py-8 sm:py-12 md:py-16">
+                      <AlertCircle className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 mx-auto mb-3 sm:mb-4 text-slate-400" />
+                      <p className="text-sm sm:text-base md:text-lg text-slate-600 font-medium">
+                        Selecciona un proyecto para comenzar la evaluación
+                      </p>
+                    </div>
+                  ) : (
+                    (() => {
                       const filteredBlocks = getFilteredBlocks(selectedProject)
                       const questionsByBlock = getQuestionsByBlock(selectedProject)
 
@@ -491,8 +487,8 @@ export default function JudgeEvaluationPage() {
 
                       return (
                         <Tabs value={activeBlock || filteredBlocks[0].id} onValueChange={setActiveBlock}>
-                          <div className="w-full overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 mb-6">
-                            <TabsList className="inline-flex h-10 md:h-12 items-center justify-start rounded-lg bg-slate-100 p-1 border border-slate-200 min-w-full">
+                          <div className="w-full overflow-x-auto -mx-3 px-3 sm:-mx-4 sm:px-4 md:mx-0 md:px-0 mb-4 sm:mb-6">
+                            <TabsList className="inline-flex h-9 sm:h-10 md:h-12 items-center justify-start rounded-lg bg-slate-100 p-1 border border-slate-200 min-w-full md:min-w-0">
                               {filteredBlocks.map((block) => {
                                 const blockQuestions = questionsByBlock[block.id] || []
                                 const blockEvaluations = safeEvaluations.filter(
@@ -509,12 +505,14 @@ export default function JudgeEvaluationPage() {
                                   <TabsTrigger
                                     key={block.id}
                                     value={block.id}
-                                    className="relative text-xs md:text-sm px-3 md:px-4 py-2 h-8 md:h-10 whitespace-nowrap flex-shrink-0 font-medium data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-md rounded-md transition-all"
+                                    className="relative text-xs sm:text-sm px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 h-7 sm:h-8 md:h-10 whitespace-nowrap flex-shrink-0 font-medium data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-md rounded-md transition-all"
                                   >
-                                    <span className="truncate max-w-[100px] md:max-w-[150px]">{block.name}</span>
+                                    <span className="truncate max-w-[80px] sm:max-w-[100px] md:max-w-[150px]">
+                                      {block.name}
+                                    </span>
                                     {blockProgress === 100 && (
-                                      <div className="absolute -top-1 -right-1 bg-accent rounded-full p-0.5">
-                                        <CheckCircle className="w-3 h-3 text-white" />
+                                      <div className="absolute -top-0.5 sm:-top-1 -right-0.5 sm:-right-1 bg-accent rounded-full p-0.5">
+                                        <CheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
                                       </div>
                                     )}
                                   </TabsTrigger>
@@ -537,27 +535,26 @@ export default function JudgeEvaluationPage() {
                           ))}
                         </Tabs>
                       )
-                    })()}
-                  </CardContent>
-                </Card>
-              </div>
-            )}
+                    })()
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
-          <TabsContent value="dashboard" className="mt-6">
-            <div className="space-y-6">
-              {/* Statistics Cards Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <TabsContent value="dashboard" className="mt-4 sm:mt-6">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 {/* Proyectos Totales */}
                 <Card className="border-slate-200 shadow-md bg-white hover:shadow-lg transition-shadow">
-                  <CardHeader className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-slate-600 mb-1">Proyectos Totales</p>
-                        <p className="text-3xl font-bold text-slate-900">{dashboardData.length}</p>
+                  <CardHeader className="p-3 sm:p-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm text-slate-600 mb-1 truncate">Proyectos Totales</p>
+                        <p className="text-2xl sm:text-3xl font-bold text-slate-900">{dashboardData.length}</p>
                       </div>
-                      <div className="bg-blue-100 p-3 rounded-xl">
-                        <Trophy className="w-6 h-6 text-primary" />
+                      <div className="bg-blue-100 p-2 sm:p-3 rounded-lg sm:rounded-xl flex-shrink-0">
+                        <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                       </div>
                     </div>
                   </CardHeader>
@@ -565,16 +562,16 @@ export default function JudgeEvaluationPage() {
 
                 {/* Proyectos en Evaluación */}
                 <Card className="border-slate-200 shadow-md bg-white hover:shadow-lg transition-shadow">
-                  <CardHeader className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-slate-600 mb-1">Proyectos en Evaluación</p>
-                        <p className="text-3xl font-bold text-slate-900">
+                  <CardHeader className="p-3 sm:p-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm text-slate-600 mb-1 truncate">Proyectos en Evaluación</p>
+                        <p className="text-2xl sm:text-3xl font-bold text-slate-900">
                           {dashboardData.filter((p: any) => p.evaluationsCount > 0).length}
                         </p>
                       </div>
-                      <div className="bg-green-100 p-3 rounded-xl">
-                        <FileText className="w-6 h-6 text-accent" />
+                      <div className="bg-green-100 p-2 sm:p-3 rounded-lg sm:rounded-xl flex-shrink-0">
+                        <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-accent" />
                       </div>
                     </div>
                   </CardHeader>
@@ -582,17 +579,17 @@ export default function JudgeEvaluationPage() {
 
                 {/* Evaluaciones Completadas */}
                 <Card className="border-slate-200 shadow-md bg-white hover:shadow-lg transition-shadow">
-                  <CardHeader className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-slate-600 mb-1">Evaluaciones Completadas</p>
-                        <p className="text-3xl font-bold text-slate-900">
+                  <CardHeader className="p-3 sm:p-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm text-slate-600 mb-1 truncate">Evaluaciones Completadas</p>
+                        <p className="text-2xl sm:text-3xl font-bold text-slate-900">
                           {dashboardData.filter((p: any) => p.evaluationsCount > 0).length}
                         </p>
                         <p className="text-xs text-slate-500 mt-1">de {dashboardData.length} proyectos</p>
                       </div>
-                      <div className="bg-purple-100 p-3 rounded-xl">
-                        <CheckCircle className="w-6 h-6 text-purple-600" />
+                      <div className="bg-purple-100 p-2 sm:p-3 rounded-lg sm:rounded-xl flex-shrink-0">
+                        <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
                       </div>
                     </div>
                   </CardHeader>
@@ -600,11 +597,11 @@ export default function JudgeEvaluationPage() {
 
                 {/* Puntuación Promedio */}
                 <Card className="border-slate-200 shadow-md bg-white hover:shadow-lg transition-shadow">
-                  <CardHeader className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-slate-600 mb-1">Puntuación Promedio</p>
-                        <p className="text-3xl font-bold text-slate-900">
+                  <CardHeader className="p-3 sm:p-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm text-slate-600 mb-1 truncate">Puntuación Promedio</p>
+                        <p className="text-2xl sm:text-3xl font-bold text-slate-900">
                           {dashboardData.length > 0
                             ? (
                                 dashboardData.reduce((acc: number, p: any) => acc + (p.averageScore || 0), 0) /
@@ -614,36 +611,35 @@ export default function JudgeEvaluationPage() {
                         </p>
                         <p className="text-xs text-slate-500 mt-1">Promedio general</p>
                       </div>
-                      <div className="bg-amber-100 p-3 rounded-xl">
-                        <Star className="w-6 h-6 text-amber-600" />
+                      <div className="bg-amber-100 p-2 sm:p-3 rounded-lg sm:rounded-xl flex-shrink-0">
+                        <Star className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
                       </div>
                     </div>
                   </CardHeader>
                 </Card>
               </div>
 
-              {/* Toggle Buttons for Ranking and Analysis */}
-              <div className="flex gap-3 justify-center">
+              <div className="flex flex-col xs:flex-row gap-2 sm:gap-3 justify-center">
                 <Button
                   onClick={() => setDashboardView("ranking")}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                  className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-all text-sm sm:text-base ${
                     dashboardView === "ranking"
                       ? "bg-primary text-white shadow-md"
                       : "bg-white text-slate-700 border-2 border-slate-200 hover:border-primary hover:text-primary"
                   }`}
                 >
-                  <Trophy className="w-5 h-5 mr-2" />
+                  <Trophy className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                   Ranking
                 </Button>
                 <Button
                   onClick={() => setDashboardView("analysis")}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                  className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-all text-sm sm:text-base ${
                     dashboardView === "analysis"
                       ? "bg-primary text-white shadow-md"
                       : "bg-white text-slate-700 border-2 border-slate-200 hover:border-primary hover:text-primary"
                   }`}
                 >
-                  <BarChart3 className="w-5 h-5 mr-2" />
+                  <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                   Análisis
                 </Button>
               </div>
