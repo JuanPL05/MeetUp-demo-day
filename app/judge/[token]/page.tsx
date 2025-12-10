@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import useSWR from "swr"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -287,7 +287,7 @@ export default function JudgeEvaluationPage() {
     console.log("[v0] EVALUATION PANEL: Blocks status:", blocksData ? `✓ (${blocksData.length})` : "❌ Loading...")
 
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center space-y-4">
           <Clock className="w-8 h-8 mx-auto mb-4 animate-spin" />
           <p>Cargando datos de evaluación...</p>
@@ -323,27 +323,25 @@ export default function JudgeEvaluationPage() {
   // Removed programConfig and organizedPrograms, sortedPrograms as they are no longer needed for the simplified structure.
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+    <div className="min-h-screen bg-slate-50">
       <div className="max-w-7xl mx-auto p-3 sm:p-4 md:p-6">
-        <div className="mb-6 md:mb-8 bg-gradient-to-r from-blue-500 via-blue-600 to-green-500 rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border border-blue-300">
+        <div className="mb-6 md:mb-8 bg-white rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg border border-slate-200">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-white mb-2 md:mb-3 drop-shadow-lg">
-                Panel de Evaluación
-              </h1>
-              <p className="text-base sm:text-lg md:text-xl text-blue-50 font-medium">
-                Bienvenido, <span className="text-white font-bold">{judge?.name || "Juez"}</span>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-2">Panel de Evaluación</h1>
+              <p className="text-base sm:text-lg text-slate-600">
+                Bienvenido, <span className="text-primary font-semibold">{judge?.name || "Juez"}</span>
               </p>
             </div>
-            <div className="bg-white rounded-lg md:rounded-xl p-3 md:p-4 shadow-xl border-2 border-blue-200">
-              <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
-                <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 flex-shrink-0" />
-                <span className="text-xs sm:text-sm font-semibold text-slate-800">
+            <div className="bg-slate-50 rounded-lg md:rounded-xl p-3 md:p-4 border border-slate-200">
+              <div className="flex items-center gap-2 md:gap-3 mb-2">
+                <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-accent flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-medium text-slate-700">
                   {completedEvaluations} de {totalEvaluations} equipos evaluados
                 </span>
               </div>
               <Progress value={progressPercentage} className="w-full md:w-72 h-2 md:h-3" />
-              <div className="text-xs text-slate-700 mt-2 text-center font-bold">
+              <div className="text-xs text-slate-600 mt-2 text-center font-medium">
                 {Math.round(progressPercentage)}% completado
               </div>
             </div>
@@ -372,27 +370,27 @@ export default function JudgeEvaluationPage() {
 
           <TabsContent value="evaluation" className="mt-6">
             <div className="space-y-6">
-              <Card className="overflow-hidden border-2 border-blue-300 bg-white shadow-2xl rounded-xl">
-                <CardHeader className="pb-6 bg-gradient-to-r from-blue-500 to-green-500 p-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-white/30">
+              <Card className="overflow-hidden border-slate-200 shadow-lg bg-white">
+                <CardHeader className="pb-6 bg-slate-50 border-b border-slate-200 p-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div className="flex items-center gap-4">
-                      <div className="p-3 md:p-4 rounded-xl bg-white shadow-lg">
-                        <Users className="w-8 h-8 md:w-10 md:h-10 text-blue-600" />
+                      <div className="p-3 md:p-4 rounded-xl bg-primary/10">
+                        <Users className="w-8 h-8 md:w-10 md:h-10 text-primary" />
                       </div>
                       <div>
-                        <h3 className="text-xl md:text-3xl font-bold text-white mb-1">Equipos Participantes</h3>
-                        <p className="text-sm md:text-lg text-blue-100">
+                        <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-1">Equipos Participantes</h3>
+                        <p className="text-sm md:text-base text-slate-600">
                           {projects.length} proyecto{projects.length !== 1 ? "s" : ""} disponible
                           {projects.length !== 1 ? "s" : ""}
                         </p>
                       </div>
                     </div>
-                    <Badge className="bg-white text-blue-600 text-base md:text-xl font-bold px-4 md:px-6 py-2 md:py-3 shadow-lg">
+                    <Badge className="bg-primary text-white text-base md:text-lg font-semibold px-4 md:px-6 py-2 shadow-md">
                       {projects.length}
                     </Badge>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 pt-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mt-6">
                     {projects.map((project) => {
                       const projectEvaluations = safeEvaluations.filter((e) => e.projectId === project.id)
                       const projectQuestions = getQuestionsForProject(project.id)
@@ -404,52 +402,38 @@ export default function JudgeEvaluationPage() {
                       return (
                         <Card
                           key={project.id}
-                          className={`cursor-pointer transition-all duration-300 hover:shadow-2xl border-2 bg-white ${
+                          className={`cursor-pointer transition-all duration-300 hover:shadow-xl border-2 bg-white ${
                             selectedProject === project.id
-                              ? "ring-4 ring-blue-400 shadow-2xl border-blue-500 scale-105"
-                              : "hover:shadow-xl border-blue-200 hover:border-blue-400 hover:scale-[1.02]"
+                              ? "ring-2 ring-primary shadow-xl border-primary"
+                              : "hover:shadow-lg border-slate-200 hover:border-primary/50"
                           }`}
                           onClick={() => setSelectedProject(project.id)}
                         >
                           <CardHeader className="pb-3 md:pb-4">
-                            <div className="flex items-center justify-between mb-3 md:mb-4">
-                              <Badge className="bg-gradient-to-r from-blue-500 to-green-500 text-white font-bold px-3 md:px-4 py-1 md:py-2 text-xs md:text-sm shadow-md">
+                            <div className="flex items-center justify-between mb-3">
+                              <Badge className="bg-primary text-white font-medium px-3 py-1 text-xs md:text-sm">
                                 {project.program || "Programa"}
                               </Badge>
                               {isComplete && (
-                                <div className="bg-green-500 rounded-full p-1">
-                                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                                <div className="bg-accent rounded-full p-1">
+                                  <CheckCircle className="w-4 h-4 text-white" />
                                 </div>
                               )}
                             </div>
-                            <CardTitle className="text-base md:text-xl font-bold text-slate-800 mb-2">
+                            <CardTitle className="text-base md:text-lg font-bold text-slate-900 mb-2">
                               {project.name}
                             </CardTitle>
+                            <CardDescription className="text-xs md:text-sm text-slate-600 line-clamp-2 mb-3">
+                              {project.description || "Sin descripción"}
+                            </CardDescription>
                             <div className="space-y-2">
-                              <div className="flex items-center gap-2 text-xs md:text-sm text-slate-600">
-                                <Users className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0 text-blue-600" />
-                                <span className="font-medium">Área: {project.team || "Sin equipo"}</span>
+                              <div className="flex items-center justify-between text-xs text-slate-600">
+                                <span>Progreso</span>
+                                <span className="font-medium">{Math.round(projectProgress)}%</span>
                               </div>
-                              {project.teamDescription && (
-                                <div className="text-xs md:text-sm text-slate-600 line-clamp-2">
-                                  <span className="font-medium">Descripción: </span>
-                                  {project.teamDescription}
-                                </div>
-                              )}
+                              <Progress value={projectProgress} className="h-2" />
                             </div>
                           </CardHeader>
-                          <CardContent className="p-3 md:p-4">
-                            <div className="space-y-3 md:space-y-4">
-                              <div className="flex justify-between text-xs md:text-sm font-semibold">
-                                <span className="text-slate-700">Progreso de Evaluación</span>
-                                <span className="text-blue-600">{Math.round(projectProgress)}%</span>
-                              </div>
-                              <Progress value={projectProgress} className="h-2 md:h-3" />
-                              <div className="text-xs text-slate-700 text-center bg-blue-50 rounded-lg py-1.5 md:py-2 font-medium border border-blue-200">
-                                {projectEvaluations.length} de {projectQuestionCount} preguntas evaluadas
-                              </div>
-                            </div>
-                          </CardContent>
                         </Card>
                       )
                     })}
@@ -470,14 +454,14 @@ export default function JudgeEvaluationPage() {
 
             {selectedProject && (
               <div className="mt-6 md:mt-8">
-                <Card className="border-2 border-blue-300 bg-white shadow-2xl rounded-xl">
-                  <CardHeader className="bg-gradient-to-r from-blue-500 to-green-500 border-b-2 border-blue-300 p-4 md:p-6">
-                    <CardTitle className="flex flex-wrap items-center gap-2 md:gap-4 text-base md:text-2xl">
-                      <div className="w-2 h-8 bg-white rounded-full shadow-lg"></div>
-                      <span className="break-words flex-1 min-w-0 text-white font-bold drop-shadow-md">
+                <Card className="border-slate-200 shadow-lg bg-white">
+                  <CardHeader className="bg-slate-50 border-b border-slate-200 p-4 md:p-6">
+                    <CardTitle className="flex flex-wrap items-center gap-2 md:gap-4 text-base md:text-xl">
+                      <div className="w-1 h-8 bg-primary rounded-full"></div>
+                      <span className="break-words flex-1 min-w-0 text-slate-900 font-bold">
                         Evaluando: {projects.find((p) => p.id === selectedProject)?.name}
                       </span>
-                      <Badge className="bg-white text-blue-600 shadow-lg text-xs md:text-sm px-3 md:px-4 py-1 md:py-2 font-bold">
+                      <Badge className="bg-slate-100 text-slate-700 border border-slate-300 text-xs md:text-sm px-3 py-1 font-medium">
                         {projects.find((p) => p.id === selectedProject)?.program}
                       </Badge>
                     </CardTitle>
@@ -489,9 +473,9 @@ export default function JudgeEvaluationPage() {
 
                       if (filteredBlocks.length === 0) {
                         return (
-                          <div className="text-center py-12 bg-blue-50 rounded-xl border-2 border-blue-200">
-                            <AlertCircle className="w-16 h-16 mx-auto mb-6 text-blue-400" />
-                            <h3 className="text-xl font-bold mb-3 text-slate-800">No hay bloques disponibles</h3>
+                          <div className="text-center py-12 bg-slate-50 rounded-xl border border-slate-200">
+                            <AlertCircle className="w-16 h-16 mx-auto mb-6 text-slate-400" />
+                            <h3 className="text-xl font-bold mb-3 text-slate-900">No hay bloques disponibles</h3>
                             <p className="text-slate-600">
                               No se encontraron bloques con preguntas para este programa.
                             </p>
@@ -502,7 +486,7 @@ export default function JudgeEvaluationPage() {
                       return (
                         <Tabs value={activeBlock || filteredBlocks[0].id} onValueChange={setActiveBlock}>
                           <div className="w-full overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 mb-6">
-                            <TabsList className="inline-flex h-10 md:h-12 items-center justify-start rounded-xl bg-white p-1 border-2 border-blue-300 min-w-full shadow-lg">
+                            <TabsList className="inline-flex h-10 md:h-12 items-center justify-start rounded-lg bg-slate-100 p-1 border border-slate-200 min-w-full">
                               {filteredBlocks.map((block) => {
                                 const blockQuestions = questionsByBlock[block.id] || []
                                 const blockEvaluations = safeEvaluations.filter(
@@ -519,11 +503,11 @@ export default function JudgeEvaluationPage() {
                                   <TabsTrigger
                                     key={block.id}
                                     value={block.id}
-                                    className="relative text-xs md:text-sm px-3 md:px-4 py-2 md:py-2.5 h-8 md:h-10 whitespace-nowrap flex-shrink-0 font-bold data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-green-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg transition-all"
+                                    className="relative text-xs md:text-sm px-3 md:px-4 py-2 h-8 md:h-10 whitespace-nowrap flex-shrink-0 font-medium data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-md rounded-md transition-all"
                                   >
                                     <span className="truncate max-w-[100px] md:max-w-[150px]">{block.name}</span>
                                     {blockProgress === 100 && (
-                                      <div className="absolute -top-1 -right-1 bg-green-500 rounded-full p-0.5 shadow-md">
+                                      <div className="absolute -top-1 -right-1 bg-accent rounded-full p-0.5">
                                         <CheckCircle className="w-3 h-3 text-white" />
                                       </div>
                                     )}
@@ -556,18 +540,18 @@ export default function JudgeEvaluationPage() {
 
           <TabsContent value="dashboard" className="mt-6">
             <div className="space-y-6">
-              <Card className="border-2 border-blue-300 bg-white shadow-2xl rounded-xl overflow-hidden">
-                <CardHeader className="bg-gradient-to-r from-blue-500 to-green-500 border-b-2 border-blue-300 p-6">
-                  <CardTitle className="flex items-center gap-3 text-xl md:text-2xl text-white font-bold">
-                    <Trophy className="w-6 h-6 md:w-7 md:h-7" />
+              <Card className="border-slate-200 shadow-lg bg-white">
+                <CardHeader className="bg-slate-50 border-b border-slate-200 p-6">
+                  <CardTitle className="flex items-center gap-3 text-xl md:text-2xl text-slate-900 font-bold">
+                    <Trophy className="w-6 h-6 md:w-7 md:h-7 text-primary" />
                     Ranking y Análisis de Proyectos
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 md:p-6">
                   <div className="space-y-6">
                     <div>
-                      <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <Trophy className="w-5 h-5 text-blue-600" />
+                      <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                        <Trophy className="w-5 h-5 text-primary" />
                         Tabla de Posiciones
                       </h3>
                       <RankingTable
@@ -577,9 +561,9 @@ export default function JudgeEvaluationPage() {
                       />
                     </div>
 
-                    <div className="border-t-2 border-blue-200 pt-6">
-                      <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <BarChart3 className="w-5 h-5 text-green-600" />
+                    <div className="border-t border-slate-200 pt-6">
+                      <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                        <BarChart3 className="w-5 h-5 text-accent" />
                         Comparación de Promedios
                       </h3>
                       <ScoreChart projects={dashboardData} />
@@ -589,10 +573,10 @@ export default function JudgeEvaluationPage() {
               </Card>
 
               {selectedDashboardProject && (
-                <Card className="border-2 border-green-300 bg-white shadow-2xl rounded-xl overflow-hidden">
-                  <CardHeader className="bg-gradient-to-r from-green-500 to-blue-500 border-b-2 border-green-300 p-6">
-                    <CardTitle className="flex items-center gap-3 text-xl md:text-2xl text-white font-bold">
-                      <BarChart3 className="w-6 h-6 md:w-7 md:h-7" />
+                <Card className="border-slate-200 shadow-lg bg-white">
+                  <CardHeader className="bg-slate-50 border-b border-slate-200 p-6">
+                    <CardTitle className="flex items-center gap-3 text-xl md:text-2xl text-slate-900 font-bold">
+                      <BarChart3 className="w-6 h-6 md:w-7 md:h-7 text-accent" />
                       Análisis Detallado del Proyecto
                     </CardTitle>
                   </CardHeader>
